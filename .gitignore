@@ -77,7 +77,15 @@ lerna-debug.log*
 # Build / Output papkalari
 build/
 dist/
-lib/
+# `lib/` SHU LOYIHADA MANBA KOD, build chiqishi EMAS —
+# shuning uchun e'tiborsiz qoldirilmaydi (2026-08-19).
+#
+# Bu qator ko'p tilli shablondan kelgan edi: Python va ba'zi JS
+# kutubxonalarida `lib/` haqiqatan build papkasi. Next.js loyihasida esa
+# u yerda `content.ts`, `auth.ts`, `types.ts`, `curriculum.ts` turadi.
+# Natijasi Vercel'da chiqdi: repoda `lib/` yo'q edi va build 12 ta
+# "Module not found: Can't resolve '@/lib/...'" xatosi bilan yiqildi.
+# lib/   <- ATAYLAB o'chirilgan, yuqoridagi izohga qarang
 out/
 .next/
 .nuxt/
@@ -115,7 +123,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# lib/   <- ATAYLAB o'chirilgan, yuqoridagi izohga qarang
 lib64/
 parts/
 sdist/
