@@ -4385,9 +4385,24 @@ main:has(.sheet-dark:last-child) + footer {
      dan ayriladi, pastdan esa manfiy `margin-bottom` bilan qaytariladi.
      Ya'ni bo'lim ichidagi masofalar avvalgidek qoladi. */
   --rail-air: 14px;
+  /* PASTDA KO'PROQ JOY — kartaning soyasi uchun (tuzatilgan xato,
+     2026-08-19).
+
+     Tepadagi 14px ko'tarilish va fokus halqasi uchun o'lchangan edi va
+     u yetadi. Pastda esa boshqa narsa turibdi: kartaning tashqi soyasi
+     (`0 18px 40px -22px`) uning pastki qirrasidan ~16px chiqadi, quti
+     esa `overflow` bilan yopiq — natijada yumshoq soya 14 pikselda
+     KESKIN kesilib, lenta ostida to'g'ri chiziq bo'lib qolardi (muallif
+     ko'rgan holat).
+
+     26px — soyaning to'liq so'nishiga yetadigan, zaxirasi bor o'lchov.
+     Tashqi masofaga ta'sir qilmaydi: manfiy chekka uni avvalgidek
+     qaytaradi. */
+  --rail-air-b: 26px;
   margin-top: calc(clamp(2.25rem, 5vw, 3.25rem) - var(--rail-air));
-  margin-bottom: calc(var(--rail-air) * -1);
-  padding-block: var(--rail-air);
+  margin-bottom: calc(var(--rail-air-b) * -1);
+  padding-top: var(--rail-air);
+  padding-bottom: var(--rail-air-b);
   overflow: hidden;
   /* Ikkala chetda SO'LISH. Usiz kartalar bo'lim qirrasiga urilib
      to'satdan kesilardi; so'lish bilan esa ular lentaga kirib, lentadan
@@ -4736,10 +4751,21 @@ main:has(.sheet-dark:last-child) + footer {
      qatorining bo'sh joyini yo'q qiladi. Usiz ramkaning pastida bir
      necha piksellik qora tasma qolardi. */
   line-height: 0;
+  /* SOYA QUTIGA SIG'ADIGAN QILIB QISQARTIRILDI (tuzatilgan xato,
+     2026-08-19).
+
+     Ilgari u `0 44px 90px -34px` edi, ya'ni ramkaning pastidan 55px
+     chiqardi. `.lb` esa `overflow: auto` bilan yopiq va uning ostida
+     atigi 34px joy bor — natijada soya o'sha yerda KESKIN kesilib,
+     surat ostida to'g'ri chiziq bo'lib turardi (muallif ko'rgan holat).
+
+     Yangi qiymatda pastki chekka 18px: soya to'liq so'nib ulguradi.
+     Ko'tarish hissi qoladi — u baribir yorug' fonda kuchli bo'lishi
+     kerak emas edi. */
   box-shadow:
     inset 0 0 0 1px rgba(28, 22, 16, 0.12),
-    0 44px 90px -34px rgba(74, 47, 12, 0.55),
-    0 12px 30px -20px rgba(74, 47, 12, 0.35);
+    0 20px 44px -24px rgba(74, 47, 12, 0.5),
+    0 8px 20px -14px rgba(74, 47, 12, 0.3);
 }
 
 /* Surat BUTUNICHA ko'rinadi — kesilmaydi va cho'zilmaydi. Kartadagi
