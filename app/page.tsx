@@ -1,4 +1,5 @@
 import { getContent, resolvePricing, resolvePortrait } from "@/lib/content";
+import { courseJsonLd, faqJsonLd } from "@/lib/seo";
 import { Liquid } from "@/components/Liquid";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Nav } from "@/components/sections/Nav";
@@ -26,8 +27,31 @@ export default async function Page() {
     content.proof.testimonials.length > 0 ||
     content.proof.videos.length > 0;
 
+  const jsonLd = [courseJsonLd(content, pricing), faqJsonLd(content)].filter(
+    Boolean,
+  );
+
   return (
     <>
+      {/* TUZILMALI MA'LUMOT — qidiruv tizimlari uchun (2026-08-19).
+
+          `dangerouslySetInnerHTML` bu yerda YAGONA yo'l va u xavfsiz:
+          JSON-LD `<script>` ning ichida turishi kerak, React esa bola
+          sifatida berilgan matnni HTML uchun ekranlab qo'yadi va JSON
+          buzilardi. Matn `JSON.stringify` dan chiqadi, ya'ni foydalanuvchi
+          kiritgan matn ham (savol-javob) to'g'ri qochiriladi; `<` belgisi
+          esa alohida almashtiriladi — usiz kontentga yozilgan "</script>"
+          teglarni erta yopib yuborishi mumkin edi. */}
+      {jsonLd.map((data, i) => (
+        <script
+          key={i}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(data).replace(/</g, "\\u003c"),
+          }}
+        />
+      ))}
+
       {/* Faqat SHU sahifada. Boshqaruv panelida (`/admin`) forma maydonlari
           bor — u yerda g'ildirakni ushlab qolish faqat halaqit berardi. */}
       <SmoothScroll />

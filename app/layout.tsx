@@ -14,18 +14,85 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+/* SAYT MANZILI BITTA JOYDA. `metadataBase` bo'lmasa, nisbiy yo'l bilan
+   berilgan har qanday rasm (OG kartochkasi ham) build paytida xato
+   beradi — ijtimoiy tarmoqlar mutlaq manzilni talab qiladi. */
+const SITE = new URL("https://janob.io");
+
+const TITLE = "AI Dasturlash: 0-dan daromadgacha";
+const DESC =
+  "Zamonaviy AI instrumentlaridan foydalanib barqaror onlayn daromad qilishni 0-dan o'rganing. 5 modul, kuniga 2 soat, birinchi mijozgacha aniq yo'riqnoma.";
+
 export const metadata: Metadata = {
-  title: "AI Dasturlash: 0-dan daromadgacha",
-  description:
-    "Zamonaviy AI instrumentlaridan foydalanib barqaror onlayn daromad qilishni 0-dan o'rganing. 5 modul, kuniga 2 soat, birinchi mijozgacha aniq yo'riqnoma.",
+  metadataBase: SITE,
+  title: {
+    default: TITLE,
+    /* Ichki sahifalar o'z nomini oldiga qo'yadi. Hozir bitta sahifa bor,
+       lekin qoida sahifa qo'shilganda o'z-o'zidan ishlaydi. */
+    template: `%s — ${TITLE}`,
+  },
+  description: DESC,
+  applicationName: TITLE,
+  authors: [{ name: "Jamol Samadov" }],
+  creator: "Jamol Samadov",
+  publisher: "Jamol Samadov",
+
+  /* KALIT SO'ZLAR o'ylab topilmagan — hammasi sahifada haqiqatan yozilgan
+     gaplardan olingan. Qidiruv tizimlari uchun ular endi og'ir omil emas,
+     lekin ijtimoiy tarmoq va katalog robotlari baribir o'qiydi. */
+  keywords: [
+    "AI dasturlash",
+    "AI bilan daromad",
+    "onlayn daromad",
+    "dasturlash kursi",
+    "Claude Code",
+    "prompt engineering",
+    "Telegram bot yasash",
+    "freelance",
+    "Jamol Samadov",
+    "janob_dasturchi",
+  ],
+
+  /* Bir sahifali sayt — kanonik manzil doim shu. Reklama havolalari
+     (`?utm_...`) bilan kelgan nusxalar alohida sahifa deb sanalmaydi. */
+  alternates: { canonical: "/" },
+
   openGraph: {
-    title: "AI Dasturlash: 0-dan daromadgacha",
+    type: "website",
+    locale: "uz_UZ",
+    url: "/",
+    siteName: TITLE,
+    title: TITLE,
     description:
       "Dasturlashni bilmasangiz ham. Kuniga 2 soat. Birinchi $200 lik sotuvgacha aniq yo'riqnoma.",
-    locale: "uz_UZ",
-    type: "website",
+    /* Rasmning O'ZI `app/opengraph-image.png` da va uni Next.js
+       avtomatik ulaydi — bu yerda faqat matn qoladi. */
   },
-  robots: { index: true, follow: true },
+
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description:
+      "Dasturlashni bilmasangiz ham. Kuniga 2 soat. Birinchi $200 lik sotuvgacha aniq yo'riqnoma.",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      /* Qidiruv natijasida rasm va matn parchasi to'liq ko'rsatilsin —
+         cheklov qo'yilmasa Google o'zi qisqartirib yuborishi mumkin. */
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
+  /* Telefon raqami bo'lmagan sonlarni iOS o'z-o'zidan havolaga
+     aylantiradi — narxlar va taymer raqamlari shundan aziyat chekardi. */
+  formatDetection: { telephone: false, address: false, email: false },
 };
 
 /* Telefonda brauzerning o'z paneli shu rangga bo'yaladi. U sahifaning eng
