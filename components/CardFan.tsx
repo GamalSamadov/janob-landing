@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useInView } from "@/lib/use-in-view";
 import { Layers, Lens, Spark, Tag, Target, Trend } from "./Icons";
 
 /* KARTALAR — kursning javoblari.
@@ -127,16 +128,25 @@ export function CardFan() {
      o'chadi — keyingi avtomatik qadam yana sokin tezlikda ketishi
      kerak. */
   const [rushing, setRushing] = useState(false);
+  /* Yelpig'ich ekrandan chiqqanda TO'XTAYDI (o'lchov asosida, 2026-08-19).
+
+     Bu yerdagi narx boshqa lentalarnikidan KATTAROQ va shuning uchun
+     alohida aytiladi: aylanish CSS emas, JS bilan haydaladi — har 2.2
+     soniyada holat o'zgaradi, React butun bo'limni qayta chizadi va
+     oltita kartaning `transform` o'tishi qaytadan boshlanadi. O'lchandi:
+     sahifaning eng tepasida turganda ham to'qqizta karta o'tishi ishlab
+     turardi, ular esa ekrandan uch ekran pastda. */
+  const [fanRef, inView] = useInView<HTMLDivElement>();
 
   /* `active` HAM BOG'LIQLIKDA va bu bosish uchun kerak: karta bosilganda
      soat NOLDAN boshlanadi, ya'ni tanlangan karta markazga kelib, darrov
      keyingisiga almashib ketmaydi. Usiz bosish oldingi qadamning
      qoldig'iga tushib qolardi. */
   useEffect(() => {
-    if (paused) return;
+    if (paused || !inView) return;
     const id = setInterval(() => setActive((a) => (a + 1) % n), STEP_MS);
     return () => clearInterval(id);
-  }, [paused, n, active]);
+  }, [paused, inView, n, active]);
 
   useEffect(() => {
     if (!rushing) return;
@@ -146,6 +156,7 @@ export function CardFan() {
 
   return (
     <div
+      ref={fanRef}
       className="fan"
       /* Kursor ustida TO'XTAYDI. Kartada gap bor, uni o'qib bo'lish kerak —
          3.2 soniya esa uzun gapga yetmasligi mumkin. Bu bezak emas: aylanma

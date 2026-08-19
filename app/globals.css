@@ -4450,6 +4450,22 @@ main:has(.sheet-dark:last-child) + footer {
 }
 
 /* ---------------------------------------------------------------------------
+   EKRANDAN TASHQARIDAGI LENTA ISHLAMAYDI (o'lchov asosida, 2026-08-19).
+
+   `is-idle` sinfini `useInView` qo'yadi (`lib/use-in-view.ts`) — u yerda
+   nima uchun kerakligi va o'lchov raqamlari yozilgan. Qisqasi: sahifaning
+   eng tepasida turganda ham o'n bitta animatsiya ekrandan tashqarida
+   ishlab turardi va eng yirigi shu lenta edi.
+
+   `animation-play-state` ATAYLAB, `animation: none` emas: to'xtatilgan
+   animatsiya o'z joyida qotadi va ekranga qaytganda o'sha yerdan davom
+   etadi. O'chirilgan bo'lsa, lenta har safar boshiga sakrab tushardi. */
+.rail.is-idle .rail-track,
+.proj-row.is-idle .proj-track {
+  animation-play-state: paused;
+}
+
+/* ---------------------------------------------------------------------------
    TELEFONDA LENTA QO'L BILAN SURILADI (muallif talabi, 2026-08-19).
 
    Kompyuterda lenta o'zi aylanadi va bu to'g'ri: u yerda kursor bilan

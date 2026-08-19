@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
+import { useInView } from "@/lib/use-in-view";
 import { Close, Play, Star } from "./Icons";
 import { Pill } from "./Pill";
 
@@ -177,6 +178,10 @@ export function ProofRail({ items }: { items: RailItem[] }) {
   const [open, setOpen] = useState<RailItem | null>(null);
   const ref = useRef<HTMLDialogElement>(null);
   const lenis = useLenis();
+  /* Lenta ekrandan chiqqanda TO'XTAYDI. U sahifaning o'rtasida turadi va
+     o'quvchi hero ni o'qib turganda ham aylanaverardi — o'lchandi, bu
+     sahifadagi eng yirik uzluksiz qatlam (1.15 MPx). */
+  const [railRef, railInView] = useInView<HTMLDivElement>();
 
   /* `showModal()` — `open` atributini qo'lda qo'yish EMAS, va bu farq
      hal qiluvchi. Faqat modal holatda `dialog` "top layer" ga chiqadi:
@@ -239,7 +244,8 @@ export function ProofRail({ items }: { items: RailItem[] }) {
   return (
     <>
       <div
-        className={`rail${open ? " rail-hold" : ""}`}
+        ref={railRef}
+        className={`rail${open ? " rail-hold" : ""}${railInView ? "" : " is-idle"}`}
         /* Tezlik KARTA SONIGA bog'liq: davomiylik bitta o'ramning enini
            bosib o'tish vaqti, ya'ni karta qo'shilganda lenta tezlashib
            ketmasligi uchun u ham o'sishi kerak. Kartaga 5 soniya —

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MODULES, PROJECTS } from "@/lib/curriculum";
 import { iconForLesson, iconForProject } from "@/lib/lesson-icons";
+import { useInView } from "@/lib/use-in-view";
 import { ArrowDown, Check } from "../Icons";
 
 /**
@@ -39,6 +40,9 @@ export function Curriculum() {
      so'rovining o'zi bilan qiladi (qarang `globals.css` → `.rm-list`). */
   const [expanded, setExpanded] = useState(false);
   const current = MODULES[active];
+  /* Loyihalar lentasi ekrandan chiqqanda to'xtaydi — sabab `use-in-view.ts`
+     da yozilgan. */
+  const [projRef, projInView] = useInView<HTMLDivElement>();
 
   /* Modul almashsa ro'yxat yana yig'iladi: yangi modul o'z boshidan
      ko'rsatilishi kerak, oldingisining ochilgan holati unga tegishli
@@ -163,7 +167,8 @@ export function Curriculum() {
           o'tishi kerak, konteyner ichida esa u ko'rinmas devorga urilib
           to'xtardi. */}
       <div
-        className="proj-row"
+        ref={projRef}
+        className={`proj-row${projInView ? "" : " is-idle"}`}
         /* Tezlik loyiha soniga bog'liq — lentaga qo'shilgan har bir
            kapsula o'z vaqtini olib keladi, ya'ni ro'yxat uzaysa lenta
            tezlashib ketmaydi. */
