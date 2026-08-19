@@ -4817,17 +4817,66 @@ main:has(.sheet-dark:last-child) + footer {
   animation: float-field 24s ease-in-out infinite;
 }
 
-/* Yagona muallif harakati: kontent shishadan chiqib keladi */
+/* ---------------------------------------------------------------------------
+   BARMOQLI QURILMADA IKKI ANIMATSIYA TO'XTAYDI (muallif shikoyati:
+   "oziroq scroll qilsam qotayabdi", 2026-08-19).
+
+   Ro'yxat SANOQLI va tanlov o'lchovga asoslangan — sahifadagi doimiy
+   animatsiyalarning ko'pchiligi arzon va ular joyida qoladi
+   (`drift-a/b`, `tape-run`, `rail-run`, `proj-run`, storis halqasi —
+   ularning hammasi faqat `translate` yoki `opacity` ni o'zgartiradi,
+   ya'ni kompozitorning o'z ishi va qayta chizish talab qilmaydi).
+
+   Bu ikkitasi esa boshqacha, chunki ikkalasi ham O'LCHAMNI o'zgartiradi:
+
+     `float-field` — `scale(1)` dan `scale(1.08)` ga, va u `filter:
+       blur(90px)` qo'yilgan elementda turibdi. O'lcham o'zgarganda 90
+       pikselli xiralik butunlay qaytadan hisoblanadi — har kadrda, uchta
+       elementda, sahifa ochiq turgan butun vaqt davomida.
+
+     `ember` — `scale(1)` dan `scale(1.07)` ga, hero ning olov maydonida.
+       Xiralik yo'q, lekin u ekranning katta qismini egallaydi.
+
+   Kompyuterda bularga kuch yetadi va ular sahifaning jonini beradi,
+   shuning uchun u yerda tegilmaydi. Telefonda esa ikkalasi ham TO'XTAB
+   turgan holatida qoladi — nur va olov joyida, faqat nafas olmaydi. */
+@media (pointer: coarse) {
+  .float-field,
+  .hero-ember {
+    animation: none;
+  }
+}
+
+/* Yagona muallif harakati: kontent shishadan chiqib keladi.
+
+   XIRALIK OLIB TASHLANDI (tuzatilgan xato, 2026-08-19). Ilgari bu yerda
+   `filter: blur(14px) → blur(0)` ham bor edi va u sahifadagi eng qimmat
+   narsa bo'lib chiqdi.
+
+   Sabab ikkita narsaning ustma-ust tushishida. Birinchisi — `blur` ni
+   brauzer kompozitorda hisoblay olmaydi: radius har o'zgarganda element
+   BUTUNLAY qaytadan chiziladi (`opacity` va `transform` da bunday emas,
+   ular tekin). Ikkinchisi — bu animatsiya vaqtga emas, SKROLLGA bog'langan
+   (`.reveal` da `animation-timeline: view()`), ya'ni radius har skroll
+   kadrida boshqa qiymat oladi. Sakkizta element, ularning ba'zisi katta
+   shisha panel — natijada barmoq harakatining har kadrida sakkizta qayta
+   chizish.
+
+   NEGA BU KECH TOPILDI: muallif tizimida "Reduce motion" YOQIQ va bu
+   animatsiya u yerda umuman ishlamaydi (quyidagi istisnolar ro'yxatiga
+   qarang — `.reveal` o'sha yerda o'chiriladi). Telefonda esa u o'chiq,
+   ya'ni xato faqat telefonda ko'rinardi.
+
+   Ko'rinishga ta'siri kichik: kontent avvalgidek pastdan ko'tarilib,
+   so'lib chiqadi — faqat endi u xiradan emas, shaffoflikdan chiqadi. */
 @keyframes surface {
   from {
     opacity: 0;
     transform: translateY(26px);
-    filter: blur(14px);
   }
   to {
     opacity: 1;
     transform: none;
-    filter: blur(0);
   }
 }
 
