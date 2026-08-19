@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ReactLenis } from "lenis/react";
 import "lenis/dist/lenis.css";
 
@@ -18,6 +19,35 @@ import "lenis/dist/lenis.css";
  * `Nav` undan bandni yopish uchun foydalanadi.
  */
 export function SmoothScroll() {
+  /* BARMOQLI QURILMADA UMUMAN ISHGA TUSHMAYDI (muallif shikoyati: "juda
+     qotayabdi, silliq scroll bo'lmayabdi", 2026-08-19).
+
+     YO'QOTILADIGAN NARSA YO'Q va buni ochiq aytish kerak: quyidagi
+     `syncTouch: false` allaqachon "barmoqqa tegilmaydi" degani, ya'ni
+     telefonda skrollni boshidan beri brauzerning O'ZI qilib kelgan.
+     Lenis esa shunga qaramay har kadrda uyg'onib, o'z nishoniga qarab
+     sahifani surishga urinardi — foydasi bo'lmagan, narxi esa bor ish.
+
+     Buning ustiga u barmoq inersiyasi bilan BIR VAQTDA ishlaydi: brauzer
+     sahifani o'z qonuni bilan suradi, Lenis esa o'z hisobini yozadi.
+     Aynan shu ikkilanish "silliq emas" bo'lib his qilinadi.
+
+     `(pointer: coarse)` — sichqoncha yo'q, barmoq bor degani. Tekshiruv
+     O'RNASHUVDAN KEYIN qilinadi: server qaysi qurilma ekanini bilmaydi,
+     shuning uchun birinchi chizmada Lenis baribir yo'q — u har doim
+     o'rnashuvdan keyin ishga tushadi. */
+  const [smooth, setSmooth] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: coarse)");
+    const apply = () => setSmooth(!mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  if (!smooth) return null;
+
   return (
     <ReactLenis
       root

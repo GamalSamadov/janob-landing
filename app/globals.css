@@ -1766,7 +1766,18 @@ button {
   .hero,
   .pain,
   .path {
-    position: static;
+    /* `relative`, `static` EMAS — va bu farq tuzatilgan xato (2026-08-19).
+
+       Avval bu yerda `static` turgan edi va u yangi xato tug'dirdi:
+       bo'limlar ichida bezak nuri (`.field`) `absolute` bilan joylashgan,
+       ya'ni ular O'Z bo'limiga tayanadi. `static` bo'lim tayanch bo'lishdan
+       to'xtaydi — nur bo'limdan chiqib, `overflow: clip` ostidan qutuladi
+       va sahifani yon tomonga cho'zib yuboradi (o'lchandi: 375px ekranda
+       57px ortiqcha kenglik, ekranning o'ng chetida bo'sh tasma).
+
+       `relative` ikkala ishni ham bajaradi: qotish yo'qoladi, tayanch esa
+       joyida qoladi. */
+    position: relative;
   }
 }
 

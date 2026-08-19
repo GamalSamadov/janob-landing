@@ -89,6 +89,21 @@ export function Nav({ showResults }: { showResults: boolean }) {
        Varaqning O'Z balandligi avvalgidek har kadrda o'lchanadi: u surat
        kelganda yoki shrift oqib ketganda o'zgaradi va o'sha xato uchun
        yozilgan izoh quyida, `write` da turibdi. */
+    /* POG'ONALAR TELEFONDA O'CHIQ (qarang `globals.css` dagi shu nomli
+       media so'rov). Shart AYNAN o'sha yerdagidek yozilgan — ikkisi
+       ajralib qolsa, o'lchov qotmaydigan bo'limlar uchun ishlab, natijasi
+       esa hech kimga kerak bo'lmasdi.
+
+       Bu tekshiruv TEZLIK uchun qo'shildi (muallif shikoyati: "juda
+       qotayabdi", 2026-08-19). Quyidagi `measure` HAR SKROLL KADRIDA
+       uchta elementning o'lchamini o'qiydi — bu brauzerni har kadrda
+       joylashuvni qaytadan hisoblashga majbur qiladi. Kompyuterda bu
+       kerak (qotish nuqtasi shundan chiqadi), telefonda esa natija
+       ishlatilmaydi: `position` u yerda `relative`, ya'ni `top` ning
+       qiymati umuman o'qilmaydi. */
+    const POGONA_OFF = "(max-width: 1024px), (pointer: coarse)";
+    const mq = window.matchMedia(POGONA_OFF);
+
     let stableH = window.innerHeight;
     let lastW = window.innerWidth;
 
@@ -107,6 +122,7 @@ export function Nav({ showResults }: { showResults: boolean }) {
     /* O'lchov faqat BITTA ish uchun qoldi: varaqlar qayerda qotishini
        hisoblash. U navning bandiga umuman aloqador emas. */
     const measure = () => {
+      if (mq.matches) return;
       for (const { el, cssVar } of SHEETS) {
         /* Varaq qayerda qotishi SHU YERDA hisoblanadi, CSS da emas.
 
@@ -197,6 +213,8 @@ export function Nav({ showResults }: { showResults: boolean }) {
     const ro = new ResizeObserver(remeasure);
     for (const { el } of SHEETS) ro.observe(el);
     window.addEventListener("resize", remeasure, { passive: true });
+    // Kompyuter o'lchamiga o'tilganda qotish nuqtasi hisoblanishi kerak.
+    mq.addEventListener("change", remeasure);
     window.addEventListener("load", remeasure);
     document.fonts?.ready.then(remeasure);
 
@@ -205,6 +223,7 @@ export function Nav({ showResults }: { showResults: boolean }) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", remeasure);
       window.removeEventListener("load", remeasure);
+      mq.removeEventListener("change", remeasure);
       ro.disconnect();
     };
   }, []);
