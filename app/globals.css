@@ -4434,6 +4434,50 @@ main:has(.sheet-dark:last-child) + footer {
   animation-play-state: paused;
 }
 
+/* ---------------------------------------------------------------------------
+   TELEFONDA LENTA QO'L BILAN SURILADI (muallif talabi, 2026-08-19).
+
+   Kompyuterda lenta o'zi aylanadi va bu to'g'ri: u yerda kursor bilan
+   to'xtatib o'qish mumkin, barmoq esa yo'q. Telefonda aksincha — barmoq
+   bor, kursor yo'q, ya'ni "kursor ustida to'xtaydi" qoidasi u yerda hech
+   qachon ishlamagan: o'quvchi kartani o'qimoqchi bo'lsa, lenta uni olib
+   qochib ketardi.
+
+   NUSXA O'RAM YASHIRILADI va bu majburiy. U cheksiz halqani ulash uchun
+   bor — qo'l bilan surilganda esa foydalanuvchi o'sha nusxagacha yetib
+   borib, bir xil kartalarni ikkinchi marta ko'rardi. Ekran o'quvchi uchun
+   u allaqachon `aria-hidden` edi; endi ko'z uchun ham yo'q.
+
+   `scroll-snap` — proximity, mandatory EMAS: mandatory har bir surishni
+   kartaga yopishtirib, tez o'tkazishni imkonsiz qiladi. Proximity esa
+   surish tugagan joyda eng yaqin kartaga tekislaydi va yo'lni to'smaydi. */
+@media (pointer: coarse) {
+  .rail {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    /* Chiziq yashiriladi — bu o'qiladigan lenta, boshqariladigan panel
+       emas; surishning o'zi kifoya. */
+    scrollbar-width: none;
+    /* Lenta oxiriga yetganda sahifa yon tomonga tortilib ketmasin. */
+    overscroll-behavior-x: contain;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rail-track {
+    animation: none;
+  }
+
+  .rail-group[aria-hidden] {
+    display: none;
+  }
+
+  .rail-card {
+    scroll-snap-align: center;
+  }
+}
+
 /* Kursor ustida to'xtaganidek, OYNA OCHIQDA ham to'xtaydi: ortda
    lentaning sudralib turishi oynadagi suratdan diqqatni tortadi. */
 .rail-hold .rail-track {
@@ -4561,6 +4605,20 @@ main:has(.sheet-dark:last-child) + footer {
   letter-spacing: -0.01em;
   /* Sahifaning o'z sarig'i — baho uchun oltin rang o'ylab topilmaydi. */
   color: var(--orange);
+}
+
+/* SOYA FAQAT KARTA ICHIDA (tuzatilgan xato, 2026-08-19).
+
+   Ilgari u `.rail-rate` ning o'zida turgan edi va shu sinf IKKI joyda
+   ishlatiladi: kartada (skrinshot ustida) va oyna ochilganda pastdagi
+   sarlavha qatorida. Kartada soya kerak — matn suratning ustida turadi
+   va usiz o'qilmaydi. Oynada esa ortida surat yo'q, ya'ni soya hech
+   narsani o'qitmaydi, faqat matn ostida iflos dog' bo'lib qoladi
+   (muallif ko'rgan holat).
+
+   `.rail-cap` ga bu tegishli emas: u faqat kartada ishlatiladi va
+   soyasi o'z joyida qoladi. */
+.rail-plate .rail-rate {
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
 }
 
