@@ -1735,6 +1735,41 @@ button {
   top: var(--path-top, 0px);
 }
 
+/* ---------------------------------------------------------------------------
+   TELEFONDA POG'ONALAR O'CHADI (tuzatilgan xato, 2026-08-19).
+
+   Muallif ko'rgan holat: telefonda sahifa "bulg'anib" ketardi — bo'limlar
+   yarim chizilgan holda bir-birining ustiga tushib, eski nusxalari ekranda
+   qolib ketardi. Kompyuterda bu hech qachon takrorlanmadi.
+
+   SABAB SHU YERDA. Uchta bo'lim bir vaqtda `sticky` bo'lib, ularning
+   ustidan quyuq qatlamlar suriladi; ustiga silliq skroll (Lenis) sahifani
+   har kadrda dasturiy suradi. Kompyuterda bu og'ir, lekin bardosh
+   beriladigan yuk; telefonda esa brauzer qotgan qatlamlarni qayta
+   chizishga ulgurmay, eski plitkalarni ekranda qoldirib ketadi.
+
+   EFFEKT TELEFONDA ALLAQACHON BUZUQ EDI va bu qarorni osonlashtiradi.
+   Pog'ona bo'lim ~ekran bo'yida bo'lgandagina o'qiladi: bo'lim ko'rinib
+   bo'ladi, keyin keyingisi uning ustiga chiqadi. Telefonda esa (375×812
+   da o'lchandi) hero ekrandan 290px, `Pain` 79px BALAND — ya'ni ular
+   qotguncha uzoq surilishi kerak va "varaq ustiga varaq" o'rniga oddiy
+   uzun skroll ko'rinardi. Krem varaq esa aksincha, ekrandan 254px past.
+
+   Ya'ni telefonda yo'qotilayotgan narsa deyarli yo'q, yutuq esa katta:
+   qotgan qatlam qolmagach, qayta chizishga ham hech narsa qolmaydi.
+   Kompyuterda effekt AVVALGIDEK to'liq ishlaydi.
+
+   `(pointer: coarse)` kenglik bilan BIRGA sanaladi: katta ekranli
+   planshet ham barmoq bilan boshqariladi va u yerda ham xuddi shu
+   muammo bor. */
+@media (max-width: 1024px), (pointer: coarse) {
+  .hero,
+  .pain,
+  .path {
+    position: static;
+  }
+}
+
 /* Qotgan varaq ustiga suriladigan qatlamlar.
 
    `background`, `isolation` va `z-index` ni ular yuqoridagi umumiy qoidadan
