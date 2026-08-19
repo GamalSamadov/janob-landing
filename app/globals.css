@@ -789,6 +789,35 @@ button {
   }
 }
 
+/* ---------------------------------------------------------------------------
+   TELEFONDA KAPSULA — TENG BO'SHLIQ VA KICHIKROQ KNOPKA (muallif talabi,
+   2026-08-19: "knopka sal tashqariga chiqib qolgan").
+
+   Yuqoridagi assimetriya (chapda 1.25rem, o'ngda 0.5rem) KOMPYUTER uchun
+   to'g'ri: u yerda kapsula 46rem gacha torayadi, ya'ni o'ng chekkada
+   allaqachon bo'sh joy bor va knopka o'zi ham dumaloq — pilla ichidagi
+   pilla kamroq bo'shliq talab qiladi.
+
+   TELEFONDA esa 46rem chegarasi umuman ishlamaydi (u ekrandan keng), ya'ni
+   kapsula butun kenglikni egallaydi. O'shanda chapda 20px, o'ngda 8px
+   qolib, knopka chekkaga tegib turgandek ko'rinadi (o'lchandi: 375px
+   ekranda o'ngdagi bo'shliq 0px edi).
+
+   Ikki o'zgarish va ikkalasi ham kerak: bo'shliq tenglashadi va knopkaning
+   o'zi bir oz kichrayadi — u 375px ekranda kenglikning 42% ini egallab
+   turgan edi. BALANDLIK KICHRAYTIRILMAYDI: 44px — barmoq uchun eng kichik
+   xavfsiz o'lcham va u `.pill` da ataylab qo'yilgan. */
+@media (max-width: 40rem) {
+  .nav-bar {
+    padding-right: calc(1.05rem * var(--nav-p));
+  }
+  .nav-bar .pill {
+    padding-inline: 1.1rem;
+    gap: 0.45rem;
+    font-size: 0.875rem;
+  }
+}
+
 /* Nav DOIM kontent ustida suzadi — shuning uchun boshqa shishalardan
    quyuqroq. Aks holda ostidagi sarlavha undan ko'rinib turadi va ikkalasi
    ham o'qilmay qoladi. */
