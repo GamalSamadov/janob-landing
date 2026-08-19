@@ -1,0 +1,151 @@
+{
+  "campaign": {
+    "mode": "standard",
+    "endsAt": "2026-09-15T19:57:00.000Z",
+    "label": "Standard chegirma"
+  },
+  "courseStart": "2026-09-20T17:48:00.000Z",
+  "telegramUsername": "@managerjanob",
+  "telegramChannelUrl": "https://t.me/janob_dasturchi",
+  "instagramUrl": "https://instagram.com/janob_dasturchi",
+  "packages": [
+    {
+      "id": "mini",
+      "name": "MINI",
+      "tagline": "Sinab ko'rish uchun. Ilk daromadgacha bo'lgan yo'l.",
+      "prices": {
+        "max": 100,
+        "standard": 120,
+        "original": 150
+      },
+      "scope": "1 va 2-modul",
+      "access": "3 oy kirish",
+      "base": [
+        "1-modul: AI bilan ilk daromad",
+        "2-modul: AI dasturlash mutaxassisi",
+        "Birinchi mijoz topishning 30 ta usuli",
+        "Dars yozuvlarini 3 oy takroran ko'rish"
+      ],
+      "extras": [],
+      "featured": false
+    },
+    {
+      "id": "start",
+      "name": "START",
+      "tagline": "To'liq dastur. Daromaddan barqaror oqimgacha.",
+      "prices": {
+        "max": 200,
+        "standard": 220,
+        "original": 250
+      },
+      "scope": "Barcha 5 modul",
+      "access": "6 oy kirish",
+      "base": [
+        "Barcha 5 modul — to'liq kurs",
+        "Kursda quriladigan barcha real loyihalar",
+        "Doimiy sotuv va mijoz oqimi strategiyasi",
+        "Top 1% mutaxassis moduli",
+        "Dars yozuvlariga 6 oy kirish"
+      ],
+      "extras": [],
+      "featured": false
+    },
+    {
+      "id": "pro",
+      "name": "PRO",
+      "tagline": "Yolg'iz qolmaysiz. Birinchi sotuvgacha yoningizdamiz.",
+      "prices": {
+        "max": 300,
+        "standard": 320,
+        "original": 390
+      },
+      "scope": "Barcha 5 modul",
+      "access": "6 oy kirish",
+      "base": [
+        "Barcha 5 modul — to'liq kurs",
+        "Kursda quriladigan barcha real loyihalar",
+        "Doimiy sotuv va mijoz oqimi strategiyasi",
+        "Top 1% mutaxassis moduli",
+        "Dars yozuvlariga 6 oy kirish"
+      ],
+      "extras": [
+        "1-modul so'ngida Jamol Samadov bilan jonli dars",
+        "Portfolio tahlili",
+        "Mijoz qidirishda mentorlar yordami",
+        "Sotuvni amalga oshirishda kuratorlar yordami"
+      ],
+      "featured": true
+    }
+  ],
+  "stats": {
+    "graduates": "120",
+    "lessons": "62"
+  },
+  "proof": {
+    "shots": [
+      {
+        "id": "c272d3j",
+        "src": "/media/proof/1786985744750-f84ad2e2.jpg",
+        "caption": "2 oyda $5,500"
+      },
+      {
+        "id": "6itmc55",
+        "src": "/media/proof/1786986194440-e37d0ff9.png",
+        "caption": "$3000"
+      },
+      {
+        "id": "a32trch",
+        "src": "/media/proof/1786986262579-5391a32f.png",
+        "caption": "20 kunda $2000"
+      },
+      {
+        "id": "ipf59sc",
+        "src": "/media/proof/1786986531405-9c0f731f.jpg",
+        "caption": "3 kunka $600"
+      }
+    ],
+    "testimonials": [],
+    "videos": [
+      {
+        "id": "aultzil",
+        "url": "https://youtube.com/shorts/wmmcmumGcRU?feature=share",
+        "name": "Abubakr",
+        "result": "",
+        "poster": "/media/poster/1786992162423-38fbc4ef.png"
+      }
+    ]
+  },
+  "about": {
+    "photo": "/media/portrait/jamal.png",
+    "experience": "6 yil",
+    "income": "",
+    "bio": "6 yillik tajribaga ega dasturchiman. Instagramda AI yordamida dasturlash haqida kontent yurataman. Bu kursda o'zim bosib o'tgan yo'lni — birinchi mijozdan barqaror daromadgacha — qadamma-qadam ko'rsataman."
+  },
+  "faq": [
+    {
+      "id": "i86trl5",
+      "question": "Bo'lib to'lash imkoni bormi?",
+      "answer": "Ha, managerga bog'lanib batafsil ma'lumot olishingiz mumkin!"
+    },
+    {
+      "id": "iia1r0k",
+      "question": "Kurs uchun telefonni o'zi yetarlimi, yoki kompyuter ham bo'lishi kerakmi?",
+      "answer": "Kursda ba'zi amalyotlarni telefonda ham qilishni ko'rsatiladi, lekin kompyutersiz stabil daromadga chiqish qiyin bo'ladi. Kopyuter bo'lishi kerak!"
+    },
+    {
+      "id": "f8anp1y",
+      "question": "Men hech nimani bilmayman, o'rganib keta olamanmi?",
+      "answer": "Ha, darslar juda sodda tuzilgan. Sizdan hech qanday tajriba talab qilinmaydi. "
+    },
+    {
+      "id": "r2mce1x",
+      "question": "Kursga qo'shilish uchun qanday kompyuter bo'lishi kerak?",
+      "answer": "Istalgan kompyuter bo'laveradi. Muhumi internetga kiradigan bo'lsa bo'lgani! Super-mega kompyuter bo'lishi shart emas!"
+    },
+    {
+      "id": "xhrvpsq",
+      "question": "Kursga qo'shilib daromad qila olamanmi?",
+      "answer": "Daromadga chiqishingiz uchun hamma sabab bo'ladigan ishlarni siru asrorlarsiz bo'lishganmiz. Hamma sabablarni mahkam ushlasangiz insha Alloh natija sizni kuttirib qo'ymaydi!"
+    }
+  ]
+}
