@@ -63,6 +63,47 @@ export function Nav({ showResults }: { showResults: boolean }) {
 
     const lastTops = new Map<string, number>();
 
+    /* EKRAN BALANDLIGI — BARQAROR QIYMAT (tuzatilgan xato, 2026-08-19).
+
+       Muallif ko'rgan holat: telefonda sahifa skroll paytida "jinnisirab"
+       ketardi — bo'limlar bir-birining ustiga noto'g'ri joyda chiqib,
+       yarim chizilgan holda qotib qolardi.
+
+       Sabab quyidagi hisobda edi. Qotish nuqtasi `min(0, ekran − varaq)`
+       va u HAR SKROLL KADRIDA qayta yoziladi. Kompyuterda `innerHeight`
+       o'zgarmaydi, ya'ni qiymat ham o'zgarmaydi va hech narsa yozilmaydi.
+       TELEFONDA esa manzil qatori skroll paytida yashirinadi va qaytadi —
+       `innerHeight` 60-100 pikselga sakraydi. Natijada `--hero-top` va
+       qolgan ikkitasi skroll davomida uzluksiz o'zgarib turardi, ya'ni
+       brauzer har kadrda uchta `sticky` bo'limning qotish shartini qaytadan
+       hisoblashga majbur bo'lardi. Kompozitor bunga ulgurmay, eski
+       plitkalarni ekranda qoldirib ketardi — surattagi yirtiq aynan shu.
+
+       Yechim: URL qatoridan kelgan o'zgarishni HISOBGA OLMASLIK. Eni
+       o'zgarmagan bo'lsa, balandlikning o'zgarishi faqat o'sha qatordan
+       bo'lishi mumkin — bunday holatda eng KATTA ko'rilgan qiymat
+       saqlanadi (qatori yashiringan holat, ya'ni skrollning barqaror
+       holati). Eni o'zgarsa — bu haqiqiy o'zgarish (burilish yoki oyna
+       o'lchami) va o'lchov noldan boshlanadi.
+
+       Varaqning O'Z balandligi avvalgidek har kadrda o'lchanadi: u surat
+       kelganda yoki shrift oqib ketganda o'zgaradi va o'sha xato uchun
+       yozilgan izoh quyida, `write` da turibdi. */
+    let stableH = window.innerHeight;
+    let lastW = window.innerWidth;
+
+    const viewportH = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      if (w !== lastW) {
+        lastW = w;
+        stableH = h;
+      } else if (h > stableH) {
+        stableH = h;
+      }
+      return stableH;
+    };
+
     /* O'lchov faqat BITTA ish uchun qoldi: varaqlar qayerda qotishini
        hisoblash. U navning bandiga umuman aloqador emas. */
     const measure = () => {
@@ -78,10 +119,7 @@ export function Nav({ showResults }: { showResults: boolean }) {
            yashiringanda o'zgaradi, skroll geometriyasi esa o'zgarmaydi.
            Endi ikkala son ham shu bitta chaqiruvdan chiqadi, ya'ni ular
            kelishmay qolishi mumkin emas. */
-        const top = Math.min(
-          0,
-          window.innerHeight - el.getBoundingClientRect().height,
-        );
+        const top = Math.min(0, viewportH() - el.getBoundingClientRect().height);
         if (lastTops.get(cssVar) !== top) {
           lastTops.set(cssVar, top);
           document.documentElement.style.setProperty(cssVar, `${top}px`);
