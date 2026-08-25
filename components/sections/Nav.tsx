@@ -96,10 +96,11 @@ export function Nav({ showResults }: { showResults: boolean }) {
 
        Tekshiruv TEZLIK uchun qo'shilgan edi (muallif shikoyati: "juda
        qotayabdi", 2026-08-19) va o'shanda `measure` skrollning har
-       kadrida chaqirilardi. ENDI U SKROLLDA UMUMAN CHAQIRILMAYDI
-       (izohi `write` da, quyida) — ya'ni bu qator hozir faqat o'lchamsiz
-       ish qilmaslik uchun qoldi: telefonda natija baribir ishlatilmaydi,
-       `position` u yerda `relative` va `top` ning qiymati o'qilmaydi. */
+       kadrida chaqirilardi. Endi u skrollda CHEKLANGAN holda chaqiriladi
+       (izohi `write` da, quyida), lekin bu qator o'z ma'nosini
+       yo'qotmadi: telefonda natija baribir ishlatilmaydi — `position` u
+       yerda `relative` va `top` ning qiymati o'qilmaydi — ya'ni o'lchov
+       u yerda ishning NOLGA tushishini ta'minlaydi. */
     const POGONA_OFF = "(max-width: 1024px), (pointer: coarse)";
     const mq = window.matchMedia(POGONA_OFF);
 
@@ -143,36 +144,63 @@ export function Nav({ showResults }: { showResults: boolean }) {
     };
     measure();
 
+    /* Skroll paytidagi CHEKLANGAN o'lchov (izohi `write` da, quyida).
+
+       `innerHeight` — arzon o'qish, joylashuvni majburlamaydi. U
+       o'zgargan bo'lsa o'lchov darhol qilinadi (oyna cho'zildi, telefon
+       burildi); aks holda 200ms da bir marta. */
+    let lastMeasureAt = 0;
+    let lastSeenH = window.innerHeight;
+    const maybeMeasure = () => {
+      const h = window.innerHeight;
+      const now = performance.now();
+      if (h === lastSeenH && now - lastMeasureAt < 200) return;
+      lastSeenH = h;
+      lastMeasureAt = now;
+      measure();
+    };
+
     /* ATAYLAB requestAnimationFrame'siz. Skroll hodisasi brauzerda
        allaqachon kadrga bog'langan, rAF esa qiymatni bir kadr KEYINGA
        suradi — o'sha bitta kadr kapsulani barmoqdan orqada sudralayotgandek
        ko'rsatadi. Bu yerda bitta CSS o'zgaruvchisi yoziladi, xolos. */
     const write = () => {
-      /* SKROLL PAYTIDA O'LCHOV YO'Q (o'lchov asosida, 2026-08-25).
+      /* O'LCHOV CHEKLANGAN, OLIB TASHLANMAGAN (o'lchov asosida,
+         2026-08-25; 2026-08-25 da bir marta tuzatilgan).
 
-         Ilgari bu yerda `measure()` turardi — har skroll kadrida uchta
-         elementning `getBoundingClientRect()` i. Bu brauzerni MAJBURIY
-         SINXRON JOYLASHUVGA olib boradi: o'qish uchun u butun hujjatni
-         (861 element, 5734px) qayta hisoblashi kerak. O'lchandi, ishlab
-         chiqarish yig'masida 1.13ms, `next dev` da 2.26ms — HAR KADRDA,
-         16.7ms lik byudjetdan.
+         Ilgari bu yerda `measure()` HAR KADRDA turardi. U brauzerni
+         MAJBURIY SINXRON JOYLASHUVGA olib boradi: uchta
+         `getBoundingClientRect()` uchun butun hujjat (861 element,
+         5734px) qaytadan hisoblanadi. O'lchandi — ishlab chiqarish
+         yig'masida 1.03ms, `next dev` da 2.26ms, 16.7ms lik byudjetdan.
 
-         U yerda turishining sababi telefondagi xato edi: hero balandligi
-         1131px bo'lgani holda o'lchovda 713px qolib ketardi va hero
-         noto'g'ri joyda qotardi. Sabab to'g'ri topilgan edi
-         (`ResizeObserver` ning yetkazilishi kadrga bog'liq), lekin
-         TUZATISH boshqa joyda ishladi: o'sha kuni pog'onalar telefonda
-         butunlay o'chirildi (`globals.css` dagi shu nomli media so'rov).
+         BIR PAYTLAR U BUTUNLAY OLIB TASHLANGAN EDI VA BU XATO BO'LDI.
+         Fikr shunday edi: quyidagi to'rtta manba (`ResizeObserver`,
+         `resize`, `load`, shriftlar) balandlik o'zgaradigan hamma
+         holatni qoplaydi. Jonli saytda tekshirilganda esa uchala
+         o'zgaruvchi ham BO'SH chiqdi — hech qachon yozilmagan, ya'ni
+         `.pain` (808px) 800px lik ekranda `top: -8px` o'rniga `top: 0`
+         da qotib, pastki 8px i kesilib qolgan edi.
 
-         Ya'ni bu chaqiruv o'zi tuzatgan xatodan omon qolgan qoldiq:
-         `measure()` ning birinchi qatori `if (mq.matches) return` va `mq`
-         AYNAN o'sha telefon sharti. Xato ko'rilgan qurilmada u
-         allaqachon umuman ishlamaydi; kompyuterda esa `ResizeObserver`
-         ishonchli — quyidagi to'rtta manba (kuzatuvchi, `resize`, `load`,
-         shriftlar) balandlik o'zgaradigan hamma holatni qoplaydi.
+         SABABNI MUALLIF ALLAQACHON YOZIB QO'YGAN EDI, o'sha olib
+         tashlangan izohda: "kuzatuvchining yetkazilishi kadr chizilishiga
+         bog'liq — sahifa fonda bo'lsa yoki brauzer chizishni
+         sekinlashtirsa, u kechikadi yoki umuman kelmaydi".
+         `ResizeObserver` ham, `resize` ham chizish siklining ichida
+         yetkaziladi; fonda turgan varaqda o'sha sikl to'xtaydi va
+         ikkalasi ham kelmaydi. Aynan shu holat takrorlandi.
 
-         Skroll ishlovchisida endi bitta ish qoldi: bitta CSS
-         o'zgaruvchisini yozish. */
+         Ya'ni to'g'ri javob "har kadrda" ham, "umuman yo'q" ham emas —
+         CHEKLANGAN. Ekran balandligini o'qish arzon (joylashuvni
+         majburlamaydi), shuning uchun o'zgargani darhol ushlanadi;
+         qolgan hamma holat uchun 200ms lik oraliq qoladi. Kompyuterda
+         bu sekundiga 60+ marta o'rniga 5 marta, ya'ni yuk ~92% ga
+         kamayadi, xato esa eng yomon holatda 200ms yashaydi.
+
+         Telefonda narxi NOL: `measure()` ning birinchi qatori
+         `if (mq.matches) return`. */
+      maybeMeasure();
+
       const t = Math.min(1, Math.max(0, window.scrollY / NAV_COLLAPSE));
       /* smoothstep — ikkala chekkada tekis. Chiziqli bo'lganda kapsula
          boshida ham, oxirida ham devorga urilgandek keskin to'xtaydi. */
@@ -206,12 +234,16 @@ export function Nav({ showResults }: { showResults: boolean }) {
     write();
 
     /* Skrolldan TASHQARIDAGI o'zgarishlar uchun. Skroll paytida o'lchov
-       `write` ning o'zida yangilanadi (yuqoriga qarang); bular esa
-       foydalanuvchi umuman skroll qilmagan holatlar:
-         `resize` — oyna o'lchami yoki telefon burilishi;
-         `load`   — surat kelib, hero balandligini o'zgartirishi;
-         shriftlar — matn qayta oqib, balandlikni surishi.
-       Uchalasi ham bitta ishni qiladi, shuning uchun bitta ishlovchi. */
+       `write` ning o'zida, cheklangan holda yangilanadi (yuqoriga
+       qarang); bular esa foydalanuvchi umuman skroll qilmagan holatlar:
+         `resize`     — oyna o'lchami yoki telefon burilishi;
+         `load`       — surat kelib, hero balandligini o'zgartirishi;
+         shriftlar    — matn qayta oqib, balandlikni surishi;
+         `visibilitychange` — varaq fondan qaytdi. Oxirgisi ALOHIDA
+           kerak: fonda chizish sikli to'xtaydi, ya'ni yuqoridagi
+           kuzatuvchi ham, `resize` ham o'sha vaqtda kelmaydi va
+           qaytgach ular o'z-o'zidan takrorlanmaydi.
+       Hammasi bitta ishni qiladi, shuning uchun bitta ishlovchi. */
     const remeasure = () => {
       measure();
       write();
@@ -222,6 +254,7 @@ export function Nav({ showResults }: { showResults: boolean }) {
     // Kompyuter o'lchamiga o'tilganda qotish nuqtasi hisoblanishi kerak.
     mq.addEventListener("change", remeasure);
     window.addEventListener("load", remeasure);
+    document.addEventListener("visibilitychange", remeasure);
     document.fonts?.ready.then(remeasure);
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -229,6 +262,7 @@ export function Nav({ showResults }: { showResults: boolean }) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", remeasure);
       window.removeEventListener("load", remeasure);
+      document.removeEventListener("visibilitychange", remeasure);
       mq.removeEventListener("change", remeasure);
       ro.disconnect();
     };
