@@ -445,10 +445,12 @@ button {
    blur esa uch katta qatlamni qayta rasterizatsiya qilishga majbur qilardi.
    Auditoriyaning katta qismi telefonda (PRODUCT.md, 5-tamoyil), shuning
    uchun kompozitsiya narxi shu yerda to'lanmaydi. */
+/* `will-change` OLIB TASHLANDI — batafsil izoh `.field` da, quyida.
+   Qisqasi: u qatlamni DOIMIY ushlab turadi, animatsiya esa muallif
+   tizimida ("Reduce motion" yoqiq) umuman ishlamaydi. */
 .liquid-form {
   position: absolute;
   border-radius: 50%;
-  will-change: transform;
 }
 
 /* Oqimlar TOR va QUYUQ: kengaytirilsa fon bir tekis kulrangga aylanadi va
@@ -517,7 +519,24 @@ button {
    nuqta oq nuqtadan ancha kuchli ko'rinadi. */
 .liquid-grain {
   position: absolute;
-  inset: -50%;
+  /* `-50%` DAN `0` GA (o'lchov asosida, 2026-08-25).
+
+     `-50%` don qatlamini ota-onadan har tomonga yarim barobar
+     kengaytirardi, ya'ni MAYDONI TO'RT BAROBAR bo'lardi. O'lchandi:
+     1280x800 lik ekranda qatlam 2540x1600 — qurilma piksellarida 16.3
+     megapiksel, va uning to'rtdan uch qismi ekrandan tashqarida.
+
+     Bu oddiy ortiqcha chizish emas: qatlamda `mix-blend-mode: multiply`
+     bor, ya'ni brauzer uni ostidagi piksellar bilan ARALASHTIRISHI kerak
+     va buning uchun alohida yuza ochadi. Sahifadagi eng katta yuza aynan
+     shu edi — blur ham (6.7 Mpx), promotsiya qilingan qatlamlar ham
+     (11.2 Mpx) undan kichik.
+
+     Kengaytirishning sababi yo'q edi: qatlamda na `transform`, na
+     animatsiya bor, ota-onada esa `overflow: hidden`. Ko'rinishga ta'siri
+     ham yo'q — don teksturasi cheksiz takrorlanadi, boshlanish nuqtasi
+     siljigani bilinmaydi. */
+  inset: 0;
   opacity: 0.035;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
@@ -576,9 +595,38 @@ button {
    chizilgan holda bir-birining ustiga tushadi" degan holatning eng katta
    ulushi shu yerdan chiqqan.
 
-   `will-change` ENDI FAQAT HARAKATLANADIGANIDA (`.float-field`, quyida).
-   Bu yerda u to'rttala maydonni ham doimiy kompozitsiya qatlamiga
-   ko'tarardi, holbuki `Pain` dagi maydon umuman qimirlamaydi. */
+   `will-change` BUTUNLAY OLIB TASHLANDI (2026-08-25, ikkinchi bosqich).
+
+   Avval u shu yerdan `.float-field` ga ko'chirilgan edi — "faqat
+   harakatlanadiganida" degan mantiq bilan. Muallif shikoyati shundan
+   keyin ham qoldi va u YANGI ma'lumot berdi: "4-5 marta tepa-pastga
+   surganimda sekinlashadi". Bu har kadrning narxi emas — bu TO'PLANISH,
+   ya'ni yuk vaqt o'tishi bilan ortadi.
+
+   O'lchandi: asosiy oqimda hech narsa to'planmaydi (5 ta to'liq
+   tepa-pas siklida animatsiya 7 ta, DOM 861 tugun, JS xotirasi 5.5MB —
+   hammasi qimirlamadi). Demak to'planish KOMPOZITORDA.
+
+   `will-change: transform` aynan shuni qiladi: u brauzerga "bu element
+   qimirlaydi, uni alohida GPU teksturasida ushlab tur" deydi — va
+   brauzer uni ANIMATSIYA BOR-YO'QLIGIDAN QAT'IY NAZAR ushlaydi. Sahifada
+   12 ta shunday element bor edi, jami 11.2 megapiksel (qurilma
+   piksellarida) va o'lchov paytida ULARNING BITTASIDA HAM animatsiya
+   ishlamayotgan edi: muallif tizimida "Reduce motion" yoqiq, ya'ni
+   `liquid-*` ham, `float-field` ham to'xtagan; `.fan-card` esa umuman
+   animatsiyasiz — undagi `transform` faqat yelpig'ich aylanganda
+   o'zgaradi.
+
+   Ya'ni 11.2 megapiksel GPU teksturasi HECH QACHON ISHLAMAYDIGAN
+   animatsiyalar uchun band edi. Xotira to'lgach kompozitor plitkalarni
+   chiqarib tashlaydi va qaytadan rastrlaydi — "4-5 martadan keyin
+   sekinlashadi" aynan shu.
+
+   YO'QOTILADIGAN NARSA YO'Q: Chromium `transform` animatsiyasi HAQIQATAN
+   ishlayotgan elementni o'zi promotsiya qiladi, `will-change` siz ham.
+   Qo'lda yozilgan `will-change` faqat "oldindan tayyorla" degani va u
+   sanoqli, aniq bir elementga qo'yilishi kerak — MDN ning o'z ogohlantirishi:
+   "ko'p elementga qo'llamang". */
 .field {
   position: absolute;
   border-radius: 50%;
@@ -903,6 +951,46 @@ button {
   text-shadow:
     0 1px 3px rgba(255, 255, 255, 0.6),
     0 2px 14px rgba(255, 255, 255, calc(0.75 * (1 - var(--nav-p))));
+}
+
+/* SOYAGA O'TISH QO'YILMAYDI (tuzatilgan xato, 2026-08-25).
+
+   Yuqoridagi soya `--nav-p` dan chiqadi, ya'ni u HAR SKROLL KADRIDA
+   boshqa qiymat oladi. Quyida esa `.nav-bar .pill span` da
+   `transition: text-shadow 0.4s` turardi (hover uchun). Ikkisi
+   qo'shilib xato beradi: har kadrda 0.4 sekundlik o'tish QAYTA
+   boshlanadi va hech qachon tugamaydi.
+
+   O'lchandi: `--nav-p` ga bitta yozuv 5 ta yangi `CSSTransition`
+   yaratadi. "Reduce motion" yoqiq tizimda bu yanada kengroq —
+   quyidagi umumiy qoida `text-shadow` ni HAR BIR elementning o'tish
+   ro'yxatiga `!important` bilan qo'shib qo'yadi.
+
+   Ko'zga ko'rinadigan ziyoni ham bor va u tezlikdan muhimroq: soya
+   barmoqdan 0.4 sekund ORQADA sudraladi, holbuki `--nav-p` ning butun
+   maqsadi skrollga aynan ergashish edi.
+
+   NARXI: hover paytida knopka matnining oq halqasi so'nib emas,
+   almashib yo'qoladi. Halqa juda kuchsiz va knopka o'sha lahzada
+   rangini ham o'zgartiradi — farq amalda ko'rinmaydi.
+
+   `!important` SHART: pastdagi "Reduce motion" bloki ham `!important`
+   ishlatadi, oddiy e'lon esa unga yutqazadi. Ro'yxat o'sha yerdagining
+   AYNAN nusxasi, faqat `text-shadow` siz.
+
+   TANLAGICH KENG va bu ham o'lchov natijasi. Avval bu yerda faqat
+   `.nav-bar a, .nav-bar span` turgan edi va besh o'tishdan uchtasi
+   qolib ketdi: `text-shadow` MEROS bo'lib o'tadi, ya'ni uni knopkaning
+   soxta elementlari (`.pill::before`, `.pill::after`) ham, ichidagi
+   `<svg>` belgisi ham oladi — ularning bittasi ham `a` ham, `span` ham
+   emas. Endi ro'yxat butun nav ostini qamraydi. */
+.nav-bar,
+.nav-bar *,
+.nav-bar *::before,
+.nav-bar *::after {
+  transition-property:
+    color, background-color, background-image, opacity, box-shadow,
+    border-color, filter, backdrop-filter !important;
 }
 
 /* Havolalar ham shu hisobda. Yig'ilgan kapsulada ular SOKIN — ierarxiya
@@ -2378,7 +2466,10 @@ main:has(.sheet-dark:last-child) + footer {
   transition:
     transform 0.9s var(--ease-out),
     opacity 0.65s var(--ease-out);
-  will-change: transform;
+  /* `will-change: transform` OLIB TASHLANDI (izohi `.field` da).
+     Oltita karta doimiy GPU teksturasini band qilardi, holbuki ular
+     faqat yelpig'ich aylanganda — bir necha sekundda bir marta —
+     qimirlaydi. O'sha paytda brauzer o'tishni o'zi promotsiya qiladi. */
 }
 
 /* CHETDAGI KARTA BOSILADI — u markazga chiqadi (muallif talabi,
@@ -4959,9 +5050,6 @@ main:has(.sheet-dark:last-child) + footer {
 }
 .float-field {
   animation: float-field 24s ease-in-out infinite;
-  /* `will-change` — HARAKATLANADIGAN maydonda va faqat shu yerda
-     (izohi `.field` da, yuqorida). */
-  will-change: transform;
 }
 
 /* ---------------------------------------------------------------------------
