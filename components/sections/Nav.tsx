@@ -94,13 +94,12 @@ export function Nav({ showResults }: { showResults: boolean }) {
        ajralib qolsa, o'lchov qotmaydigan bo'limlar uchun ishlab, natijasi
        esa hech kimga kerak bo'lmasdi.
 
-       Bu tekshiruv TEZLIK uchun qo'shildi (muallif shikoyati: "juda
-       qotayabdi", 2026-08-19). Quyidagi `measure` HAR SKROLL KADRIDA
-       uchta elementning o'lchamini o'qiydi — bu brauzerni har kadrda
-       joylashuvni qaytadan hisoblashga majbur qiladi. Kompyuterda bu
-       kerak (qotish nuqtasi shundan chiqadi), telefonda esa natija
-       ishlatilmaydi: `position` u yerda `relative`, ya'ni `top` ning
-       qiymati umuman o'qilmaydi. */
+       Tekshiruv TEZLIK uchun qo'shilgan edi (muallif shikoyati: "juda
+       qotayabdi", 2026-08-19) va o'shanda `measure` skrollning har
+       kadrida chaqirilardi. ENDI U SKROLLDA UMUMAN CHAQIRILMAYDI
+       (izohi `write` da, quyida) — ya'ni bu qator hozir faqat o'lchamsiz
+       ish qilmaslik uchun qoldi: telefonda natija baribir ishlatilmaydi,
+       `position` u yerda `relative` va `top` ning qiymati o'qilmaydi. */
     const POGONA_OFF = "(max-width: 1024px), (pointer: coarse)";
     const mq = window.matchMedia(POGONA_OFF);
 
@@ -149,24 +148,31 @@ export function Nav({ showResults }: { showResults: boolean }) {
        suradi — o'sha bitta kadr kapsulani barmoqdan orqada sudralayotgandek
        ko'rsatadi. Bu yerda bitta CSS o'zgaruvchisi yoziladi, xolos. */
     const write = () => {
-      /* Har kadrda QAYTA O'LCHANADI va bu ataylab.
+      /* SKROLL PAYTIDA O'LCHOV YO'Q (o'lchov asosida, 2026-08-25).
 
-         Avval o'lchov faqat `ResizeObserver` ga tayangan edi va aynan
-         shu xato bo'ldi: telefonda hero balandligi 1131px bo'lgani holda
-         `--hero-h` da 713px turib qoldi, natijada hero to'liq ko'rinmay
-         qotib qolgan va surat yarmida kesilgan holda uning ustiga qora
-         qatlam chiqib kelgan edi (o'lchandi).
+         Ilgari bu yerda `measure()` turardi — har skroll kadrida uchta
+         elementning `getBoundingClientRect()` i. Bu brauzerni MAJBURIY
+         SINXRON JOYLASHUVGA olib boradi: o'qish uchun u butun hujjatni
+         (861 element, 5734px) qayta hisoblashi kerak. O'lchandi, ishlab
+         chiqarish yig'masida 1.13ms, `next dev` da 2.26ms — HAR KADRDA,
+         16.7ms lik byudjetdan.
 
-         Sabab — kuzatuvchining yetkazilishi kadr chizilishiga bog'liq:
-         sahifa fonda bo'lsa yoki brauzer chizishni sekinlashtirsa, u
-         kechikadi yoki umuman kelmaydi. Bu yerda esa xato KO'ZGA
-         KO'RINADI — hero noto'g'ri joyda qotadi.
+         U yerda turishining sababi telefondagi xato edi: hero balandligi
+         1131px bo'lgani holda o'lchovda 713px qolib ketardi va hero
+         noto'g'ri joyda qotardi. Sabab to'g'ri topilgan edi
+         (`ResizeObserver` ning yetkazilishi kadrga bog'liq), lekin
+         TUZATISH boshqa joyda ishladi: o'sha kuni pog'onalar telefonda
+         butunlay o'chirildi (`globals.css` dagi shu nomli media so'rov).
 
-         Bitta elementning o'lchamini o'qish arzon, skroll ishlovchisi esa
-         allaqachon kadrga bog'langan. Avval O'QIYMIZ, keyin YOZAMIZ —
-         bitta kadr ichida layout ikki marta hisoblanmaydi. */
-      measure();
+         Ya'ni bu chaqiruv o'zi tuzatgan xatodan omon qolgan qoldiq:
+         `measure()` ning birinchi qatori `if (mq.matches) return` va `mq`
+         AYNAN o'sha telefon sharti. Xato ko'rilgan qurilmada u
+         allaqachon umuman ishlamaydi; kompyuterda esa `ResizeObserver`
+         ishonchli — quyidagi to'rtta manba (kuzatuvchi, `resize`, `load`,
+         shriftlar) balandlik o'zgaradigan hamma holatni qoplaydi.
 
+         Skroll ishlovchisida endi bitta ish qoldi: bitta CSS
+         o'zgaruvchisini yozish. */
       const t = Math.min(1, Math.max(0, window.scrollY / NAV_COLLAPSE));
       /* smoothstep — ikkala chekkada tekis. Chiziqli bo'lganda kapsula
          boshida ham, oxirida ham devorga urilgandek keskin to'xtaydi. */

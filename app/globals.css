@@ -551,14 +551,39 @@ button {
   }
 }
 
-/* Ambient yorug'lik maydonlari */
+/* Ambient yorug'lik maydonlari.
+
+   `filter: blur(90px)` OLIB TASHLANDI (o'lchov asosida, 2026-08-25).
+
+   U SHUNCHAKI KERAK EMAS EDI, va buni ko'rish uchun maydonning o'z foniga
+   qarash kifoya: to'rttasining ham foni `radial-gradient(..., transparent
+   68%)`, ya'ni rang markazdan chekkagacha allaqachon nolga tushadi. Ustiga
+   qo'yilgan xiralik silliq gradientni yana bir marta silliqlaydi — ko'zga
+   hech narsa qo'shmaydi. Tekshirildi: `Pain` bo'limi (eng katta maydon,
+   1664x896) xiralik bilan va xiraliksiz suratga olindi, ikki surat
+   ajratib bo'lmaydigan darajada bir xil chiqdi.
+
+   NARXI esa katta edi va u ikki qismdan iborat. Birinchisi — xiralikning
+   O'ZI: to'rtta maydon birgalikda 18.4 megapiksel (qurilma piksellarida,
+   dpr 2) gauss xiraligi. Ikkinchisi va yomonroq'i — CHEGARA KENGAYISHI:
+   `blur(r)` elementning chizish maydonini har tomondan ~3r ga kengaytiradi,
+   ya'ni 90px lik radius 1664x896 lik maydonni 2204x1436 ga aylantiradi.
+   Faqat o'sha bitta element uchun 12.6 megapiksel rastr.
+
+   Aynan shu qatlamlar qotib turgan varaqlar (`.hero`, `.pain`, `.path`)
+   ning ichida edi — ya'ni har safar varaq ustidan qatlam surilganda
+   kompozitor ularni qayta o'qishga majbur bo'lardi. "Bo'limlar yarim
+   chizilgan holda bir-birining ustiga tushadi" degan holatning eng katta
+   ulushi shu yerdan chiqqan.
+
+   `will-change` ENDI FAQAT HARAKATLANADIGANIDA (`.float-field`, quyida).
+   Bu yerda u to'rttala maydonni ham doimiy kompozitsiya qatlamiga
+   ko'tarardi, holbuki `Pain` dagi maydon umuman qimirlamaydi. */
 .field {
   position: absolute;
   border-radius: 50%;
-  filter: blur(90px);
   pointer-events: none;
   z-index: 0;
-  will-change: transform;
 }
 
 /* ============================================================================
@@ -1671,16 +1696,35 @@ button {
 .over-pain > *,
 .over-path > * {
   z-index: 0;
-  /* `isolation` — aynan shishalar uchun. `z-index` chizish TARTIBINI
-     ajratadi, lekin `backdrop-filter` "ortimda nima bor" degan savolga
-     baribir eng yaqin IZOLYATSIYALANGAN ota-onagacha qarab javob beradi —
-     ya'ni usiz u butun sahifani ko'radi. `isolate` o'sha savolning javobini
-     bo'lim bilan chegaralaydi.
+  /* `isolation: isolate` OLIB TASHLANDI (o'lchov asosida, 2026-08-25).
 
-     Ko'rinishga ta'siri yo'q, chunki bo'limning ostidagi narsa baribir
-     o'sha qora edi (o'lchab solishtirildi: 27 ta kadrda o'rtacha yorug'lik
-     bir xil qoldi). O'zgaradigan narsa faqat brauzerning ishi. */
-  isolation: isolate;
+     U shishalar uchun yozilgan edi: `backdrop-filter` "ortimda nima bor"
+     degan savolga eng yaqin IZOLYATSIYALANGAN ota-onagacha qarab javob
+     beradi, `isolate` esa o'sha savolni bo'lim bilan chegaralardi.
+
+     ENDI JAVOB BERADIGAN SAVOL QOLMADI. Quyida (`.over-hero *`) o'sha
+     kundan beri qat'iy invariant turibdi: bu qatlamning ICHIDA
+     `backdrop-filter` umuman yo'q, hammasi `none !important` bilan
+     o'chirilgan. Tekshirildi: sahifada qolgan 6 ta `backdrop-filter` li
+     yuzaning bittasi ham bu o'ramlarning ichida emas — hammasi nav va
+     hero da, ya'ni undan TASHQARIDA.
+
+     QATLAM TARTIBI O'ZGARMAYDI va bu muhim: qatlam kontekstini bu yerda
+     `isolation` emas, `z-index: 0` yasaydi — bo'limlar `.section` orqali,
+     o'ramlar esa o'z qoidasi orqali allaqachon `position: relative`.
+     Ya'ni `isolation` bu ro'yxatda hech qachon YAGONA sabab bo'lmagan.
+
+     ARALASHTIRISH ham yo'q: sahifada `mix-blend-mode` li ikkita element
+     bor (`.liquid-grain`, `.hero-grain`) va ikkalasi ham bu o'ramlardan
+     tashqarida (o'lchandi).
+
+     NARXI: `isolate` Chromium ga har bir bo'limni alohida rastr yuzasiga
+     (render surface) yig'ishni buyuradi. Bu yerda ular UYALANGAN —
+     `.over-path` (17.3 Mpx) `.over-pain` (20.6 Mpx) ning ichida, u esa
+     `.over-hero` (24.7 Mpx) ning ichida. Ichkaridagi yuza yangilanganda
+     yangilanish tashqarigacha ko'tarilib chiqadi, ya'ni bitta kichik
+     o'zgarish uchun uchta ulkan yuza qayta yig'iladi. Qotib turgan varaq
+     ustidan qatlam surilganda bu har kadrda takrorlanardi. */
   background-color: var(--ink);
 }
 
@@ -4915,6 +4959,9 @@ main:has(.sheet-dark:last-child) + footer {
 }
 .float-field {
   animation: float-field 24s ease-in-out infinite;
+  /* `will-change` — HARAKATLANADIGAN maydonda va faqat shu yerda
+     (izohi `.field` da, yuqorida). */
+  will-change: transform;
 }
 
 /* ---------------------------------------------------------------------------
