@@ -1,7 +1,6 @@
 import { getContent, resolvePricing, resolvePortrait } from "@/lib/content";
 import { courseJsonLd, faqJsonLd } from "@/lib/seo";
 import { Liquid } from "@/components/Liquid";
-import { SmoothScroll } from "@/components/SmoothScroll";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { Pain } from "@/components/sections/Pain";
@@ -52,9 +51,21 @@ export default async function Page() {
         />
       ))}
 
-      {/* Faqat SHU sahifada. Boshqaruv panelida (`/admin`) forma maydonlari
-          bor — u yerda g'ildirakni ushlab qolish faqat halaqit berardi. */}
-      <SmoothScroll />
+      {/* SILLIQ SKROLL (Lenis) OLIB TASHLANDI (muallif qarori, 2026-08-25).
+
+          Bu yerda `<SmoothScroll />` turgan edi. U sahifani har kadrda
+          dasturiy surardi va shu bilan ikki narsani kafolatlardi: har
+          kadrda `scroll` hodisasi (ya'ni nav ishlovchisi ham har kadrda)
+          va KASR piksellik siljish. Ikkinchisi muhimroq — butun sonli
+          siljishda brauzer chizilgan plitkalarni shunchaki surib qo'yadi,
+          kasr sonda esa ularni QAYTA rastrlaydi. Bu sahifada rastrlash
+          qimmat (qotgan varaqlar, xiralik va aralashtirish yuzalari).
+
+          Qaror `?lenis=0` o'chirgichi bilan yonma-yon solishtirilgandan
+          keyin qabul qilindi. O'chirgichning o'zi ham shu bilan ketdi.
+
+          Endi skroll butunlay brauzerniki. Anker havolalar `globals.css`
+          dagi `scroll-behavior: smooth` qo'lida. */}
       <Liquid />
       <Nav showResults={hasProof} />
 

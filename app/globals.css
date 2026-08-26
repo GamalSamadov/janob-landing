@@ -1904,10 +1904,14 @@ button {
    qolib ketardi. Kompyuterda bu hech qachon takrorlanmadi.
 
    SABAB SHU YERDA. Uchta bo'lim bir vaqtda `sticky` bo'lib, ularning
-   ustidan quyuq qatlamlar suriladi; ustiga silliq skroll (Lenis) sahifani
-   har kadrda dasturiy suradi. Kompyuterda bu og'ir, lekin bardosh
+   ustidan quyuq qatlamlar suriladi. Kompyuterda bu og'ir, lekin bardosh
    beriladigan yuk; telefonda esa brauzer qotgan qatlamlarni qayta
    chizishga ulgurmay, eski plitkalarni ekranda qoldirib ketadi.
+
+   O'SHANDA UCHINCHI OMIL HAM BOR EDI: silliq skroll (Lenis) sahifani
+   har kadrda dasturiy surardi. U 2026-08-25 da butunlay olib tashlandi
+   (izohi `page.tsx` da), lekin yuqoridagi ikkitasi joyida qolgani uchun
+   bu qoida ham joyida qoladi.
 
    EFFEKT TELEFONDA ALLAQACHON BUZUQ EDI va bu qarorni osonlashtiradi.
    Pog'ona bo'lim ~ekran bo'yida bo'lgandagina o'qiladi: bo'lim ko'rinib
@@ -5128,9 +5132,28 @@ main:has(.sheet-dark:last-child) + footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+  /* ANKER SILLIQLIGI SAQLANADI (muallif qarorining davomi, 2026-08-25).
+
+     Bu yerda `scroll-behavior: auto` turgan edi, ya'ni "Reduce motion"
+     yoqiq tizimda `#dastur` bosilganda sahifa sakrab tushardi. AMALDA
+     bu hech qachon ko'rinmasdi: ankerlarni Lenis o'z qo'liga olgan edi
+     (`anchors: true`) va u `prefers-reduced-motion` ni ATAYLAB hurmat
+     qilmasdi — sababi o'sha komponentda batafsil yozilgan edi va u
+     shunday: "sahifadagi o'z-o'zidan o'ynaydigan animatsiyalar
+     to'xtaydi, chunki ular foydalanuvchi so'ramagan harakat; bu yerdagi
+     harakat esa uning O'Z skrolli — u boshlaydi, u to'xtatadi".
+
+     Lenis ketgach, o'sha qoida bajarilmay qolardi va muallif (uning
+     tizimida "Reduce motion" YOQIQ) o'zgarishni darhol sezardi: nav
+     havolalari sakrab ishlay boshlardi. Shuning uchun qatorning o'zi
+     olib tashlandi — qaror o'zgarmadi, uni bajaradigan vosita o'zgardi.
+
+     NARXI NOL: `scroll-behavior` faqat DASTURIY skrollga ta'sir qiladi
+     (anker, `scrollIntoView`). G'ildirak va barmoq unga umuman
+     tegmaydi, ya'ni oddiy skroll avvalgidek brauzernikicha qoladi.
+
+     QAYTARISH bir qator: shu yerga `html { scroll-behavior: auto; }`
+     ni qaytarish kifoya. */
   /* Takrorlanuvchi va aylanma animatsiyalar to'liq to'xtaydi. */
   *,
   *::before,

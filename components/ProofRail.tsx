@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { useLenis } from "lenis/react";
 import { useInView } from "@/lib/use-in-view";
 import { Close, Play, Star } from "./Icons";
 import { Pill } from "./Pill";
@@ -177,7 +176,6 @@ function RailCard({
 export function ProofRail({ items }: { items: RailItem[] }) {
   const [open, setOpen] = useState<RailItem | null>(null);
   const ref = useRef<HTMLDialogElement>(null);
-  const lenis = useLenis();
   /* Lenta ekrandan chiqqanda TO'XTAYDI. U sahifaning o'rtasida turadi va
      o'quvchi hero ni o'qib turganda ham aylanaverardi — o'lchandi, bu
      sahifadagi eng yirik uzluksiz qatlam (1.15 MPx). */
@@ -200,27 +198,26 @@ export function ProofRail({ items }: { items: RailItem[] }) {
     if (!open && d.open) d.close();
   }, [open]);
 
-  /* OYNA OCHIQDA SAHIFA QOTADI — IKKI QISM, va ikkalasi ham kerak.
+  /* OYNA OCHIQDA SAHIFA QOTADI.
 
-     Birinchisi `lenis.stop()`: silliq skroll sahifani HAQIQATDAN suradi
-     (qarang `SmoothScroll.tsx`), ya'ni uni to'xtatmasak, u modal oyna
-     ostida ham o'z ishini qilaverardi.
+     Ilgari bu yerda ikki qism bor edi va birinchisi `lenis.stop()` —
+     silliq skroll sahifani HAQIQATDAN surardi, ya'ni uni to'xtatmasak,
+     u modal oyna ostida ham o'z ishini qilaverardi. Lenis 2026-08-25 da
+     butunlay olib tashlandi (izohi `page.tsx` da), shu bilan o'sha qism
+     ham ketdi.
 
-     Ikkinchisi — brauzerning O'Z skrolli, va bu tuzatilgan xato
-     (o'lchandi, 2026-08-17). Faqat `lenis.stop()` YETMADI: `lenis-stopped`
+     IKKINCHI QISM QOLADI va u allaqachon asosiy ish qilardi (o'lchandi,
+     2026-08-17): `lenis.stop()` YOLG'IZ YETMAGAN edi — `lenis-stopped`
      sinfi qo'yilgan holda ham haqiqiy g'ildirak sahifani 500px surib
-     yubordi. Sabab ikkitasi bir-birining ustiga tushgan — modal `dialog`
-     ochiq bo'lsa ham brauzer ortdagi hujjatni skroll qilaverishi (bu
-     spetsifikatsiyada shunday) va Lenis to'xtagan holatda hodisani
-     o'zicha to'sib qololmasligi.
+     yubordi. Sabab Lenis da emas: modal `dialog` ochiq bo'lsa ham
+     brauzer ortdagi hujjatni skroll qilaveradi (spetsifikatsiyada
+     shunday). Ya'ni bu qism Lenis borligidan qat'i nazar kerak edi.
 
-     Shu sababli hodisa MANBADA to'xtatiladi. Oynaning ICHIDAGI skroll
-     o'tkaziladi (uzun matn baribir o'qilishi kerak), sahifaga chiqib
-     ketmasligini esa `.lb` dagi `overscroll-behavior: contain` ushlaydi. */
+     Hodisa MANBADA to'xtatiladi. Oynaning ICHIDAGI skroll o'tkaziladi
+     (uzun matn baribir o'qilishi kerak), sahifaga chiqib ketmasligini
+     esa `.lb` dagi `overscroll-behavior: contain` ushlaydi. */
   useEffect(() => {
     if (!open) return;
-
-    lenis?.stop();
 
     const block = (e: Event) => {
       if (ref.current?.contains(e.target as Node)) return;
@@ -235,9 +232,8 @@ export function ProofRail({ items }: { items: RailItem[] }) {
     return () => {
       window.removeEventListener("wheel", block, { capture: true });
       window.removeEventListener("touchmove", block, { capture: true });
-      lenis?.start();
     };
-  }, [open, lenis]);
+  }, [open]);
 
   const media = open ? mediaOf(open) : null;
 
