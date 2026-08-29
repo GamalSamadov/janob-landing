@@ -5566,3 +5566,194 @@ textarea.admin-input {
   z-index: 20;
   margin-top: 2.5rem;
 }
+
+/* ============================================================================
+   CHALLANGE SAHIFASI (`/challange`) — 2026-08-25.
+
+   TALAB BITTA VA U QAT'IY (muallif): "telefonda ochilganida bularning
+   hammasi takma-tak ochilishi kerak. eng muhumi video va uni tagidagi
+   knopka takma tak ko'rinishi kerak."
+
+   Ya'ni sahifaning o'lchov birligi piksel emas, EKRAN BALANDLIGI. Shu
+   sababli bu yerda `vh` emas, `svh` ishlatiladi: `vh` telefonda manzil
+   qatori YASHIRINGAN holatdagi balandlikni beradi, ya'ni qator ochiq
+   turganda hisob ekrandan oshib ketadi va knopka pastda qolib ketardi.
+   `svh` esa har doim eng KICHIK holatni beradi — knopka qatorga qaramay
+   ko'rinadi.
+
+   Fon `Hero.tsx` nikidan bir piksel ham farq qilmaydi (muallif talabi:
+   "huddi hozirgi saytning hero sectioni kabi dezaynda"). Farq faqat
+   ikkita sozlashda va ikkalasi ham quyida izohlangan.
+   ========================================================================== */
+
+.chal {
+  /* `.hero-backdrop` `absolute`, ya'ni unga tayanch kerak. */
+  position: relative;
+  /* `body` — flex ustun (`layout.tsx`), shu sababli sahifa qolgan
+     bo'shliqning hammasini oladi. */
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  padding-block: clamp(1rem, 3svh, 2.5rem);
+  overflow-x: clip;
+}
+
+/* FONNING PASTKI CHIQISHI VA ERISHI OLIB TASHLANADI — ikkalasi ham
+   asosiy sahifadagi vazifa uchun edi.
+
+   `inset: 0 0 -150px 0` fonni bo'lim chegarasidan 150px pastga chiqarardi
+   va mask o'sha joyda uni so'ndirardi: hero keyingi bo'limga chok
+   qoldirmay ulanishi uchun. BU YERDA KEYINGI BO'LIM YO'Q — sahifa
+   fonning o'zi bilan tugaydi.
+
+   Va bu bezak emas, MAJBURIY: `absolute` element ham sahifa
+   uzunligiga qo'shiladi, ya'ni 150px lik chiqish "bitta ekranga sig'sin"
+   talabini buzib, sahifani 150 piksel skroll qilinadigan qilib
+   qo'yardi. */
+.chal .hero-backdrop {
+  inset: 0;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.chal-shell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  /* TAKMA-TAK — bitta ustun, HAMMA ekranda. Kompyuterda ham yonma-yon
+     qilinmaydi: sahifada bitta yo'l bor va u tepadan pastga. */
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  /* Oraliq ham ekran balandligidan — past ekranda o'zi siqiladi. */
+  gap: clamp(0.7rem, 1.8svh, 1.4rem);
+}
+
+/* Sarlavha `.t-hero` dan og'irligini, katta harflarini va harf oralig'ini
+   oladi; bu yerda faqat O'LCHOV o'zgaradi. Sabab oddiy: hero da sarlavha
+   ekranning yarmini olishi mumkin, bu yerda esa uning ostida yana to'rtta
+   element bor va hammasi bitta ekranga sig'ishi kerak.
+
+   `line-height` .88 dan .94 ga ko'tarildi: hero da sarlavha ikki-uch
+   ta YIRIK qatordan iborat va zich terim uni yaxlit blok qiladi; bu
+   yerda esa u kichik va uch qatorga bo'linadi — o'sha zichlikda qatorlar
+   bir-biriga yopishib qolardi. */
+.chal-title {
+  font-size: clamp(1.45rem, 0.95rem + 2.6vw, 2.9rem);
+  line-height: 0.94;
+  max-width: 18ch;
+}
+
+/* `.t-lead` ning kengligi 46ch — u CHAPGA tekislangan uzun paragraf
+   uchun. Bu yerda matn qisqa va markazda, o'sha kenglikda esa u bir
+   qatorga cho'zilib, sarlavha bilan bog'lanmay qolardi. */
+.chal-sub {
+  font-size: clamp(0.95rem, 0.85rem + 0.55vw, 1.2rem);
+  max-width: 34ch;
+}
+
+/* VIDEO ENINI EKRAN BALANDLIGI BELGILAYDI — sahifadagi eng muhim qator.
+
+   Sotuvchining `div` i `width: 100%` va `padding-top: 56.25%` bilan
+   keladi, ya'ni balandligini O'ZI enidan oladi (16:9). Demak enni
+   cheklash — balandlikni cheklashning yagona yo'li.
+
+   `52svh * 16 / 9` — eni shunday bo'lsinki, balandligi ekranning 52% i
+   chiqsin. Qolgan 48% sarlavha, ost-sarlavha, izoh va KNOPKAGA qoladi.
+   O'lchandi (375x667): jami 494px, ya'ni knopka ekranning pastki
+   chetidan 170px yuqorida tugaydi.
+
+   Uchta chegaradan eng kichigi olinadi: ekran eni, balandlik byudjeti va
+   44rem (kompyuterda video cheksiz kattalashib ketmasligi uchun). */
+.chal-video {
+  width: min(100%, calc(52svh * 16 / 9), 44rem);
+  border-radius: clamp(14px, 2.6vw, 22px);
+  overflow: hidden;
+  /* Player kelgunicha joy bo'sh oq to'rtburchak bo'lib turmasin. */
+  background: rgba(28, 22, 16, 0.06);
+  /* Qirra va soya `.glass` bilan bir qonunda: ichkarida oq soch chiziq,
+     tashqarida iliq qora soya. `backdrop-filter` ATAYLAB yo'q — ortida
+     video turadi, ya'ni xiralatiladigan fon ko'rinmaydi, narxi esa
+     qoladi. */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(28, 22, 16, 0.08),
+    0 26px 60px -30px rgba(74, 47, 12, 0.55);
+}
+
+/* PLAYERNING BO'SH "CTA" BANDI YASHIRINADI (o'lchov asosida, 2026-08-25).
+
+   Vidalytics `div` ning ichiga ikkita narsa qo'yadi: videoning o'zi
+   (`.Tech__wrapper`, 16:9 — ya'ni `padding-top: 56.25%` aynan shunga
+   ajratilgan) va undan KEYIN `.CallToActionsManager__wrapper` —
+   balandligi 70px qilib qotirilgan band. U player ichida chiqadigan
+   knopka uchun ajratilgan joy.
+
+   Bu sahifada u BO'SH: o'lchandi — `innerHTML` uzunligi 0, bolasi 0 ta.
+   Ya'ni ramkaning ichida 70 pikselli quruq tasma paydo bo'lardi va video
+   ramkaning yarmida osilib qolgandek ko'rinardi. Ustiga u telefonda
+   byudjetning 70 pikselini yeb turadi — sahifa esa bitta ekranga
+   sig'ishi kerak.
+
+   `:empty` ATAYLAB — `display: none` emas. Agar muallif kelajakda
+   Vidalytics ning o'z knopkasini sozlasa, band bo'sh bo'lmay qoladi,
+   selektor mos kelmaydi va knopka o'z-o'zidan ko'rinadi. Ya'ni bu
+   yashirish emas, "bo'sh joyni egallama" degani. */
+.chal-video .CallToActionsManager__wrapper:empty {
+  display: none;
+}
+
+.chal-note {
+  font-size: clamp(0.9rem, 0.82rem + 0.4vw, 1.05rem);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text-2);
+  max-width: 32ch;
+}
+
+/* Knopka izohdan bir oz uzoqroq: u alohida QADAM, matnning davomi emas. */
+.chal-cta {
+  margin-top: clamp(0.1rem, 0.8svh, 0.6rem);
+}
+
+/* YOTIQ HOLAT VA PAST EKRANLAR.
+
+   Telefonni yonboshlatganda balandlik 375px ga tushadi va yuqoridagi 52%
+   lik byudjet ishlamay qoladi: video 195px bo'lib, qolgan to'rtta element
+   uchun 180px qoladi — knopka ekrandan chiqib ketardi (o'lchandi).
+
+   VIDEONI KICHRAYTIRISHNING O'ZI YETMADI va sabab `clamp()` ning
+   ishlashida (o'lchandi: 667x375 da sahifa baribir 401px chiqdi, ya'ni
+   knopkaning 10px i ekrandan tashqarida qoldi).
+
+   Yuqoridagi bo'shliqlar `clamp(1rem, 3svh, 2.5rem)` ko'rinishida
+   yozilgan. 375px lik ekranda `3svh` = 11.25px, lekin PASTKI CHEGARA
+   1rem = 16px — ya'ni clamp o'sha 16 ni qaytaradi. Aynan siqilish kerak
+   bo'lgan joyda chegara siqilishga yo'l qo'ymaydi. Oraliqlarda ham xuddi
+   shu: 1.8svh = 6.75px, chegara esa 11.2px.
+
+   Shu sababli bu yerda faqat video emas, BO'SHLIQLAR ham qayta
+   yoziladi — pastki chegaralari past qilib. O'lchandi: 667x375 da jami
+   356px, ya'ni knopka ostida 19px zaxira qoladi. */
+@media (max-height: 520px) {
+  .chal {
+    padding-block: clamp(0.5rem, 2svh, 1rem);
+  }
+  .chal-shell {
+    gap: clamp(0.4rem, 1.2svh, 0.8rem);
+  }
+  .chal-video {
+    width: min(100%, calc(40svh * 16 / 9), 44rem);
+  }
+  .chal-title {
+    font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2rem);
+  }
+  .chal-note {
+    font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
+  }
+  .chal-cta {
+    margin-top: 0;
+  }
+}
