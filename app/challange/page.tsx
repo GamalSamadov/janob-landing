@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { getContent } from "@/lib/content";
-import { Pill } from "@/components/Pill";
 
-/* Havola admin panelidan o'zgartirilishi mumkin, shuning uchun sahifa
-   har so'rovda qayta hisoblanadi — asosiy sahifadagi qoidaning aynan
-   o'zi. */
-export const dynamic = "force-dynamic";
+/* SAHIFA STATIK va bu 2026-08-30 da shunday bo'ldi. Ilgari u
+   `force-dynamic` edi, chunki pastdagi knopkaning manzili
+   `data/content.json` dan kelardi. Knopka olib tashlangach (izohi
+   quyida), sahifada o'zgaruvchi ma'lumot umuman qolmadi — hammasi
+   qat'iy matn va sotuvchining video kodi. */
 
 export const metadata: Metadata = {
   title: "Videoni ko'ring",
@@ -63,18 +62,7 @@ const VID_SRC =
   VID_ID +
   "', 'https://fast.vidalytics.com/embeds/3rkrl5_r/_iTkeRZNw0jSwdf7/');";
 
-export default async function ChallangePage() {
-  const content = await getContent();
-
-  /* KNOPKA MANZILI — Telegram kanali, `data/content.json` dan.
-
-     Muallif manzilni aytmagan, shuning uchun bu TAXMIN va uni ochiq
-     aytish kerak. Kanal tanlangani sababi: sahifadagi yagona harakat
-     "video ko'rilgandan keyingi keyingi qadam" bo'lib, saytdagi qolgan
-     hamma yo'l ham o'sha yerga olib boradi. Boshqa manzil kerak bo'lsa
-     — bitta qator. */
-  const href = content.telegramChannelUrl || "https://t.me/janob_dasturchi";
-
+export default function ChallangePage() {
   return (
     <main className="chal">
       {/* HERO NING O'Z FONI, o'zgartirilmagan holda (muallif talabi:
@@ -120,13 +108,18 @@ export default async function ChallangePage() {
           Videoni to&apos;liq ko&apos;rib chiqing va pasdagi knopkani bosing
         </p>
 
-        {/* `pill-white` — sahifadagi YAGONA harakat, shuning uchun u
-            hero dagi birinchi knopka bilan bir xil olovli yuzada.
-            `external`: Telegram yangi varaqda ochiladi va o'quvchi
-            videoga qaytib kela oladi. */}
-        <Pill href={href} external className="pill-white chal-cta">
-          Bu yerga bosing
-        </Pill>
+        {/* KNOPKA OLIB TASHLANDI (muallif talabi, 2026-08-30):
+            "pasdagi knopka kerak emas ekan".
+
+            Sababi player ning o'zida: Vidalytics kerakli daqiqada
+            videoning tagida O'Z knopkasini chiqaradi. Ya'ni sahifada
+            ikkita harakat bo'lib qolgan edi va ikkalasi bir xil ishni
+            qilardi — o'quvchi qaysi birini bosishni o'ylab qolardi.
+
+            O'rniga sokin ilinma qoldi: harakat emas, taklif. Shuning
+            uchun u knopka EMAS — o'quvchining diqqati player ning
+            knopkasida qolishi kerak. */}
+        <p className="chal-follow">Menga obuna bo&apos;ling</p>
       </div>
 
       <Script id={VID_ID + "__loader"} dangerouslySetInnerHTML={{ __html: VID_SRC }} />

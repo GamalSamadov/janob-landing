@@ -5660,19 +5660,50 @@ textarea.admin-input {
    keladi, ya'ni balandligini O'ZI enidan oladi (16:9). Demak enni
    cheklash — balandlikni cheklashning yagona yo'li.
 
-   `52svh * 16 / 9` — eni shunday bo'lsinki, balandligi ekranning 52% i
-   chiqsin. Qolgan 48% sarlavha, ost-sarlavha, izoh va KNOPKAGA qoladi.
-   O'lchandi (375x667): jami 494px, ya'ni knopka ekranning pastki
-   chetidan 170px yuqorida tugaydi.
+   `46svh * 16 / 9` — eni shunday bo'lsinki, balandligi ekranning 46% i
+   chiqsin.
 
-   Uchta chegaradan eng kichigi olinadi: ekran eni, balandlik byudjeti va
-   44rem (kompyuterda video cheksiz kattalashib ketmasligi uchun). */
+   BYUDJET 52% DAN 46% GA TUSHIRILDI, `40rem` esa `44rem` dan (o'lchov
+   asosida, 2026-08-30). Sabab: player kerakli daqiqada videoning tagida
+   O'Z knopkasini chiqaradi va o'sha band bo'sh holatdagi 70px emas,
+   125px joy oladi (o'lchandi). Eski byudjetda sahifa aynan o'shanda
+   4px ga oshib ketardi — ya'ni knopka chiqishi bilan sahifa skroll
+   qilinadigan bo'lib qolardi.
+
+   Kompyuterda cheklovni `40rem` beradi (1280x800 da video 640x360),
+   telefonda esa ekran eni. Uchta chegaradan eng kichigi olinadi. */
 .chal-video {
-  width: min(100%, calc(52svh * 16 / 9), 44rem);
-  border-radius: clamp(14px, 2.6vw, 22px);
+  position: relative;
+  width: min(100%, calc(46svh * 16 / 9), 40rem);
+  --chal-radius: clamp(14px, 2.6vw, 22px);
+}
+
+/* RAMKA O'RAMDA EMAS, VIDEONING O'ZIDA (muallif ko'rgan holat,
+   2026-08-30: "bu knopkani atrofida keraksiz shadow bor").
+
+   Ilgari yumaloq qirra, ichki soch chiziq va tashqi soya `.chal-video`
+   ning O'ZIDA edi va bo'sh holatda bu to'g'ri ko'rinardi — o'ram
+   videodan bir piksel ham katta emasdi.
+
+   KEYIN PLAYER O'Z KNOPKASINI CHIQARDI. Vidalytics videoning tagida
+   knopka uchun band ochadi (`.CallToActionsManager__wrapper`, 70px) va
+   o'sha band ham o'ramning ICHIDA. Ya'ni o'ram 70px ga o'sib, ramka
+   knopkani ham o'rab olardi: knopka atrofida kulrang yuza, qirra va
+   soya paydo bo'lardi — muallif ko'rgan narsa aynan shu.
+
+   Endi ramka `.Tech__wrapper` da — bu videoning o'z yuzasi va u
+   `absolute` bo'lib aynan 16:9 maydonni qoplaydi (o'lchandi: o'ram
+   335x258 bo'lganda u 335x188, ya'ni knopka bandi undan tashqarida
+   qoladi). Player knopkasi shu sababli endi ochiq fonda, hech qanday
+   ramkasiz turadi.
+
+   SINF SOTUVCHINIKI va buni bilib qo'ygan ma'qul: nomi o'zgarsa, ramka
+   YO'QOLADI — sahifa buzilmaydi, video shunchaki to'g'ri burchak bilan
+   chiqadi. Shu sababli bu yerda faqat BEZAK turadi; o'lcham, joylashuv
+   va sig'im hisobi o'ramning o'zida qoladi. */
+.chal-video .Tech__wrapper {
+  border-radius: var(--chal-radius);
   overflow: hidden;
-  /* Player kelgunicha joy bo'sh oq to'rtburchak bo'lib turmasin. */
-  background: rgba(28, 22, 16, 0.06);
   /* Qirra va soya `.glass` bilan bir qonunda: ichkarida oq soch chiziq,
      tashqarida iliq qora soya. `backdrop-filter` ATAYLAB yo'q — ortida
      video turadi, ya'ni xiralatiladigan fon ko'rinmaydi, narxi esa
@@ -5681,6 +5712,18 @@ textarea.admin-input {
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
     inset 0 0 0 1px rgba(28, 22, 16, 0.08),
     0 26px 60px -30px rgba(74, 47, 12, 0.55);
+}
+
+/* Player kelgunicha joy bo'sh qolmasin. Faqat 16:9 maydon — knopka
+   bandiga tegmaydi, ya'ni yuqoridagi muammo bu yerda takrorlanmaydi. */
+.chal-video::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  aspect-ratio: 16 / 9;
+  z-index: -1;
+  border-radius: var(--chal-radius);
+  background: rgba(28, 22, 16, 0.06);
 }
 
 /* PLAYERNING BO'SH "CTA" BANDI YASHIRINADI (o'lchov asosida, 2026-08-25).
@@ -5713,9 +5756,18 @@ textarea.admin-input {
   max-width: 32ch;
 }
 
-/* Knopka izohdan bir oz uzoqroq: u alohida QADAM, matnning davomi emas. */
-.chal-cta {
+/* "Menga obuna bo'ling" — knopkaning o'rnida qolgan sokin ilinma.
+
+   ATAYLAB KNOPKA EMAS (izohi `page.tsx` da): sahifadagi yagona harakat
+   endi player ning ichida va diqqat o'sha yerda qolishi kerak. Shuning
+   uchun bu matn izohdan bir pog'ona QUYUQROQ (ko'zga tashlanadi), lekin
+   knopkaga o'xshamaydi — na yuzasi bor, na qirrasi. */
+.chal-follow {
   margin-top: clamp(0.1rem, 0.8svh, 0.6rem);
+  font-size: clamp(0.95rem, 0.85rem + 0.45vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text);
 }
 
 /* YOTIQ HOLAT VA PAST EKRANLAR.
@@ -5753,7 +5805,8 @@ textarea.admin-input {
   .chal-note {
     font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
   }
-  .chal-cta {
+  .chal-follow {
     margin-top: 0;
+    font-size: clamp(0.85rem, 0.8rem + 0.3vw, 1rem);
   }
 }
