@@ -5660,21 +5660,23 @@ textarea.admin-input {
    keladi, ya'ni balandligini O'ZI enidan oladi (16:9). Demak enni
    cheklash — balandlikni cheklashning yagona yo'li.
 
-   `46svh * 16 / 9` — eni shunday bo'lsinki, balandligi ekranning 46% i
+   `52svh * 16 / 9` — eni shunday bo'lsinki, balandligi ekranning 52% i
    chiqsin.
 
-   BYUDJET 52% DAN 46% GA TUSHIRILDI, `40rem` esa `44rem` dan (o'lchov
-   asosida, 2026-08-30). Sabab: player kerakli daqiqada videoning tagida
-   O'Z knopkasini chiqaradi va o'sha band bo'sh holatdagi 70px emas,
-   125px joy oladi (o'lchandi). Eski byudjetda sahifa aynan o'shanda
-   4px ga oshib ketardi — ya'ni knopka chiqishi bilan sahifa skroll
-   qilinadigan bo'lib qolardi.
+   BYUDJET IKKI MARTA O'ZGARDI va ikkalasi ham o'lchovdan chiqqan
+   (2026-08-30). Avval 52% dan 46% ga TUSHIRILDI: player kerakli
+   daqiqada videoning tagida o'z knopkasini chiqaradi va o'sha band
+   bo'sh holatdagi 70px emas, 125px joy oladi — eski byudjetda sahifa
+   aynan o'shanda 4px ga oshib ketardi. So'ng izoh matni olib
+   tashlangach (muallif talabi) 59px bo'shadi va byudjet 52% ga
+   QAYTARILDI: bo'shagan joyning egasi video, chunki sahifa o'sha video
+   uchun bor.
 
-   Kompyuterda cheklovni `40rem` beradi (1280x800 da video 640x360),
+   Kompyuterda cheklovni `44rem` beradi (1280x800 da video 704x396),
    telefonda esa ekran eni. Uchta chegaradan eng kichigi olinadi. */
 .chal-video {
   position: relative;
-  width: min(100%, calc(46svh * 16 / 9), 40rem);
+  width: min(100%, calc(52svh * 16 / 9), 44rem);
   --chal-radius: clamp(14px, 2.6vw, 22px);
 }
 
@@ -5748,14 +5750,6 @@ textarea.admin-input {
   display: none;
 }
 
-.chal-note {
-  font-size: clamp(0.9rem, 0.82rem + 0.4vw, 1.05rem);
-  line-height: 1.5;
-  font-weight: 400;
-  color: var(--text-2);
-  max-width: 32ch;
-}
-
 /* "Menga obuna bo'ling" — knopkaning o'rnida qolgan sokin ilinma.
 
    ATAYLAB KNOPKA EMAS (izohi `page.tsx` da): sahifadagi yagona harakat
@@ -5768,6 +5762,27 @@ textarea.admin-input {
   font-weight: 600;
   letter-spacing: -0.015em;
   color: var(--text);
+}
+
+/* OBUNA QATORI — hero dagi `.smini` ning oqimga tushgan ko'rinishi.
+
+   `.smini` ning o'zi suratning burchagiga yopishtirilgan
+   (`position: absolute; top: 100%; right: -0.625rem`) va u yerda bu
+   to'g'ri: qator suratning qo'shimchasi, o'z joyini egallamasligi kerak.
+
+   Bu yerda vazifa teskari — qator sahifadagi YAGONA havola va u
+   markazda, oqimning ichida turishi kerak. Shuning uchun uchala
+   joylashuv xususiyati ham qaytariladi. Qolgan hamma narsa (metall
+   gradient, yorug' halqa, bosish maydoni, hover) `.smini-link` dan
+   o'zgarishsiz keladi. */
+.smini-row {
+  position: static;
+  right: auto;
+  justify-content: center;
+  /* Belgilar yirikroq (22px), ya'ni orasi ham kengroq: hero dagi 2px
+     shu o'lchamda ularni bir-biriga yopishtirib qo'yardi. */
+  gap: 0.35rem;
+  margin-top: clamp(0.1rem, 0.6svh, 0.45rem);
 }
 
 /* YOTIQ HOLAT VA PAST EKRANLAR.
@@ -5801,9 +5816,6 @@ textarea.admin-input {
   }
   .chal-title {
     font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2rem);
-  }
-  .chal-note {
-    font-size: clamp(0.85rem, 0.8rem + 0.3vw, 0.95rem);
   }
   .chal-follow {
     margin-top: 0;

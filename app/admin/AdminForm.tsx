@@ -391,6 +391,19 @@ export function AdminForm({ initial }: { initial: Content }) {
               onChange={(e) => patch({ instagramUrl: e.target.value })}
             />
           </Field>
+          {/* YouTube FAQAT `/challange` sahifasida ko'rinadi — hero dagi
+              ikkita belgi 2026-08-16 da qotirilgan va unga tegilmadi. */}
+          <Field
+            label="YouTube havolasi"
+            hint="Faqat /challange sahifasida. Bo'sh qoldirsangiz ko'rinmaydi."
+          >
+            <input
+              className="admin-input mt-2"
+              placeholder="https://youtube.com/@..."
+              value={c.youtubeUrl}
+              onChange={(e) => patch({ youtubeUrl: e.target.value })}
+            />
+          </Field>
         </Section>
 
         {/* ---------------- Paketlar ---------------- */}

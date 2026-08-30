@@ -22,6 +22,7 @@ export async function getContent(): Promise<Content> {
      ko'rinmaydi" degani, ya'ni xavfsiz sukut. */
   c.telegramChannelUrl ??= "";
   c.instagramUrl ??= "";
+  c.youtubeUrl ??= "";
   /* Savol-javob keyin qo'shilgan (2026-08-17), ya'ni serverdagi faylda u
      bo'lmasligi mumkin. Bo'sh RO'YXAT xavfsiz sukut: bo'lim shu holatda
      umuman chizilmaydi, boshqaruv panelida esa `.map()` yiqilmaydi. */

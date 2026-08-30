@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { getContent } from "@/lib/content";
+import { SocialMini } from "@/components/SocialMini";
 
-/* SAHIFA STATIK va bu 2026-08-30 da shunday bo'ldi. Ilgari u
-   `force-dynamic` edi, chunki pastdagi knopkaning manzili
-   `data/content.json` dan kelardi. Knopka olib tashlangach (izohi
-   quyida), sahifada o'zgaruvchi ma'lumot umuman qolmadi — hammasi
-   qat'iy matn va sotuvchining video kodi. */
+/* Ijtimoiy tarmoq havolalari boshqaruv panelidan o'zgartiriladi,
+   shuning uchun sahifa har so'rovda qayta hisoblanadi — asosiy
+   sahifadagi qoidaning aynan o'zi.
+
+   Sahifa bir muddat STATIK bo'lib turgan edi (knopka olib tashlangach
+   o'zgaruvchi ma'lumot qolmagandi); obuna qatori qo'shilishi bilan u
+   yana dinamikga qaytdi. */
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Videoni ko'ring",
   description:
-    "Qisqa video va undan keyingi bitta qadam. Videoni to'liq ko'rib chiqing va pastdagi knopkani bosing.",
+    "Qisqa video — ko'rib chiqing, keyingi qadam videoning o'zida.",
 
   /* QIDIRUVGA TUSHMAYDI va bu ataylab. Bu sahifa ochiq katalog uchun
      emas — havolasi qo'lda yuboriladi. Indekslansa, u qidiruv
@@ -62,7 +67,9 @@ const VID_SRC =
   VID_ID +
   "', 'https://fast.vidalytics.com/embeds/3rkrl5_r/_iTkeRZNw0jSwdf7/');";
 
-export default function ChallangePage() {
+export default async function ChallangePage() {
+  const content = await getContent();
+
   return (
     <main className="chal">
       {/* HERO NING O'Z FONI, o'zgartirilmagan holda (muallif talabi:
@@ -104,22 +111,44 @@ export default function ChallangePage() {
           />
         </div>
 
-        <p className="chal-note">
-          Videoni to&apos;liq ko&apos;rib chiqing va pasdagi knopkani bosing
-        </p>
+        {/* VIDEODAN KEYIN IKKITA NARSA BOR EDI, IKKALASI HAM KETDI
+            (muallif talabi, 2026-08-30).
 
-        {/* KNOPKA OLIB TASHLANDI (muallif talabi, 2026-08-30):
-            "pasdagi knopka kerak emas ekan".
-
+            Birinchisi — KNOPKA ("pasdagi knopka kerak emas ekan").
             Sababi player ning o'zida: Vidalytics kerakli daqiqada
             videoning tagida O'Z knopkasini chiqaradi. Ya'ni sahifada
-            ikkita harakat bo'lib qolgan edi va ikkalasi bir xil ishni
+            ikkita harakat bo'lib qolgan va ikkalasi bir xil ishni
             qilardi — o'quvchi qaysi birini bosishni o'ylab qolardi.
 
-            O'rniga sokin ilinma qoldi: harakat emas, taklif. Shuning
-            uchun u knopka EMAS — o'quvchining diqqati player ning
-            knopkasida qolishi kerak. */}
+            Ikkinchisi — IZOH MATNI ("kel shu text o'zi kerak emas").
+            U "videoni to'liq ko'rib chiqing va PASDAGI knopkani bosing"
+            deb turardi. Knopka ketgach ko'rsatkich noto'g'ri tomonga
+            ishora qila boshlagan edi: player knopkasi videoning tagida,
+            ya'ni o'sha matndan YUQORIDA chiqadi.
+
+            Qolgani — sokin ilinma. U ataylab knopka EMAS: sahifadagi
+            yagona harakat player ning ichida va diqqat o'sha yerda
+            qolishi kerak. */}
         <p className="chal-follow">Menga obuna bo&apos;ling</p>
+
+        {/* OBUNA QATORI (muallif talabi, 2026-08-30): Telegram kanali,
+            Instagram va YouTube.
+
+            Hero dagi AYNI komponent, faqat `row` ko'rinishida: u yerda
+            qator suratning burchagiga yopishtirilgan va belgilari 15px,
+            bu yerda esa u oqimning ichida, markazda va 22px. Farqning
+            sababi vazifada — hero da bu suratning qo'shimchasi, bu yerda
+            esa sahifadagi YAGONA havola.
+
+            Uchalasi ham bo'sh bo'lsa qator umuman chizilmaydi va bu
+            komponentning o'z qoidasi: hech qayerga olib bormaydigan
+            belgi bezakdan ham yomon. */}
+        <SocialMini
+          variant="row"
+          telegramChannelUrl={content.telegramChannelUrl}
+          instagramUrl={content.instagramUrl}
+          youtubeUrl={content.youtubeUrl}
+        />
       </div>
 
       <Script id={VID_ID + "__loader"} dangerouslySetInnerHTML={{ __html: VID_SRC }} />

@@ -51,9 +51,9 @@ function MetalGradient({ id }: { id: string }) {
 
 const SIZE = 15;
 
-function TelegramMetal() {
+function TelegramMetal({ size = SIZE }: { size?: number }) {
   return (
-    <svg width={SIZE} height={SIZE} viewBox="0 0 24 24" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
       <MetalGradient id="sm-tg" />
       <path
         fill="url(#sm-tg)"
@@ -67,9 +67,9 @@ function TelegramMetal() {
    qalinroq — yonidagi Telegram to'la to'ldirilgan va ingichka kontur
    uning yonida ikkinchi darajali bo'lib ko'rinardi. Gradient chiziqqa
    ham tushadi: SVG da `stroke` gradient bilan bo'yalishi mumkin. */
-function InstagramMetal() {
+function InstagramMetal({ size = SIZE }: { size?: number }) {
   return (
-    <svg width={SIZE} height={SIZE} viewBox="0 0 24 24" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
       <MetalGradient id="sm-ig" />
       <rect
         x="3"
@@ -94,26 +94,73 @@ function InstagramMetal() {
   );
 }
 
+/* YouTube — TESHIKLI belgi. Uchburchak ustidan chizilmaydi, korpusdan
+   KESIB olinadi (`fillRule="evenodd"`, bitta yo'lda ikkita kontur).
+
+   Sababi materialda: uchburchakni rang bilan chizish uchun sahifaning
+   yer rangini bilish kerak, bu belgi esa ikki xil fonda turadi — hero da
+   iliq oq, `/challange` da esa olov nuri ustida. Teshik hech narsa
+   bilmasligi kerak: u ortidagi fon nima bo'lsa, o'shani ko'rsatadi.
+
+   Korpus Telegram kabi TO'LDIRILGAN (kontur emas): qatorda ikkita
+   to'ldirilgan va bitta konturli belgi bo'lib, og'irlik teng taqsimlanadi. */
+function YoutubeMetal({ size = SIZE }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden>
+      <MetalGradient id="sm-yt" />
+      <path
+        fill="url(#sm-yt)"
+        fillRule="evenodd"
+        d="M6 4.6h12a4.4 4.4 0 0 1 4.4 4.4v6a4.4 4.4 0 0 1-4.4 4.4H6a4.4 4.4 0 0 1-4.4-4.4V9A4.4 4.4 0 0 1 6 4.6ZM10 8.6l6.2 3.4-6.2 3.4V8.6Z"
+      />
+    </svg>
+  );
+}
+
 interface Props {
-  /* Ikkalasi ham bo'sh bo'lishi mumkin va bo'sh bo'lsa o'z belgisi
+  /* Har biri bo'sh bo'lishi mumkin va bo'sh bo'lsa o'z belgisi
      CHIZILMAYDI — `Footer` dagi bilan bir xil qoida va boshqaruv
      panelidagi va'da ("Bo'sh qoldirsangiz ko'rinmaydi"). Hech qayerga
      olib bormaydigan belgi bezakdan ham yomon: u bosiladi va
      foydalanuvchini bo'sh joyga olib tushadi. */
   telegramChannelUrl: string;
   instagramUrl: string;
+
+  /* YouTube IXTIYORIY va bu ataylab (2026-08-30). Hero uni BERMAYDI:
+     surat ostidagi ikkita belgi 2026-08-16 da qotirilgan tartib va
+     unga tegilmadi. `/challange` esa uchalasini beradi. */
+  youtubeUrl?: string;
+
+  /**
+   * `pin`  — hero: suratning o'ng pastki burchagiga yopishtirilgan,
+   *          `position: absolute` (`.smini`).
+   * `row`  — `/challange`: matn ostidagi markazga tekislangan qator,
+   *          oqimning ichida va belgilari yirikroq. Sabab: u yerda bu
+   *          qator sahifadagi YAGONA havola, hero da esa u suratning
+   *          qo'shimchasi.
+   */
+  variant?: "pin" | "row";
 }
 
-export function SocialMini({ telegramChannelUrl, instagramUrl }: Props) {
+export function SocialMini({
+  telegramChannelUrl,
+  instagramUrl,
+  youtubeUrl = "",
+  variant = "pin",
+}: Props) {
   const tg = telegramChannelUrl.trim();
   const ig = instagramUrl.trim();
+  const yt = youtubeUrl.trim();
 
-  // Ikkalasi ham bo'sh bo'lsa qator umuman chizilmaydi — aks holda surat
-  // ostida sababsiz bo'sh joy qolardi.
-  if (!tg && !ig) return null;
+  // Hammasi bo'sh bo'lsa qator umuman chizilmaydi — aks holda sababsiz
+  // bo'sh joy qolardi.
+  if (!tg && !ig && !yt) return null;
+
+  const row = variant === "row";
+  const size = row ? 22 : SIZE;
 
   return (
-    <div className="smini">
+    <div className={row ? "smini smini-row" : "smini"}>
       {tg && (
         <a
           href={tg}
@@ -122,7 +169,7 @@ export function SocialMini({ telegramChannelUrl, instagramUrl }: Props) {
           className="smini-link"
           aria-label="Telegram kanal"
         >
-          <TelegramMetal />
+          <TelegramMetal size={size} />
         </a>
       )}
 
@@ -134,7 +181,19 @@ export function SocialMini({ telegramChannelUrl, instagramUrl }: Props) {
           className="smini-link"
           aria-label="Instagram"
         >
-          <InstagramMetal />
+          <InstagramMetal size={size} />
+        </a>
+      )}
+
+      {yt && (
+        <a
+          href={yt}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="smini-link"
+          aria-label="YouTube kanal"
+        >
+          <YoutubeMetal size={size} />
         </a>
       )}
     </div>

@@ -80,12 +80,18 @@ export interface Content {
       Bu MENEJER, muallifning o'zi emas. */
   telegramUsername: string;
 
-  /* Quyidagi ikkisi — MUALLIF PROFILLARI, sotuv emas. Ular hero da,
-     surat ostidagi ikkita kichik belgida ishlatiladi: u yerdan odam
-     xabar yozmaydi, obuna bo'ladi. Ikkalasi ham bo'sh qoldirilsa
-     belgisi umuman chizilmaydi. */
+  /* Quyidagi UCHTASI — MUALLIF PROFILLARI, sotuv emas. Ulardan odam
+     xabar yozmaydi, OBUNA bo'ladi. Har biri bo'sh qoldirilsa o'z belgisi
+     umuman chizilmaydi.
+
+     Ikki joyda ishlatiladi va ro'yxati har joyda BIR XIL EMAS:
+       hero — surat ostidagi ikkita kichik belgi (Telegram, Instagram);
+       `/challange` — "Menga obuna bo'ling" ostidagi qator (uchalasi).
+     Farq ataylab: hero ning tartibi 2026-08-16 da qotirilgan va unga
+     tegilmadi. */
   telegramChannelUrl: string;
   instagramUrl: string;
+  youtubeUrl: string;
 
   packages: Package[];
 
