@@ -99,7 +99,7 @@ function InstagramMetal({ size = SIZE }: { size?: number }) {
 
    Sababi materialda: uchburchakni rang bilan chizish uchun sahifaning
    yer rangini bilish kerak, bu belgi esa ikki xil fonda turadi — hero da
-   iliq oq, `/challange` da esa olov nuri ustida. Teshik hech narsa
+   iliq oq, `/bepul-darslik` da esa olov nuri ustida. Teshik hech narsa
    bilmasligi kerak: u ortidagi fon nima bo'lsa, o'shani ko'rsatadi.
 
    Korpus Telegram kabi TO'LDIRILGAN (kontur emas): qatorda ikkita
@@ -128,16 +128,19 @@ interface Props {
 
   /* YouTube IXTIYORIY va bu ataylab (2026-08-30). Hero uni BERMAYDI:
      surat ostidagi ikkita belgi 2026-08-16 da qotirilgan tartib va
-     unga tegilmadi. `/challange` esa uchalasini beradi. */
+     unga tegilmadi. Uchalasini `/bepul-darslik` berardi — o'sha qator
+     2026-08-31 da olib tashlangach, hozircha buni hech kim bermaydi. */
   youtubeUrl?: string;
 
   /**
    * `pin`  — hero: suratning o'ng pastki burchagiga yopishtirilgan,
    *          `position: absolute` (`.smini`).
-   * `row`  — `/challange`: matn ostidagi markazga tekislangan qator,
-   *          oqimning ichida va belgilari yirikroq. Sabab: u yerda bu
-   *          qator sahifadagi YAGONA havola, hero da esa u suratning
-   *          qo'shimchasi.
+   * `row`  — matn ostidagi markazga tekislangan qator, oqimning
+   *          ichida va belgilari yirikroq. `/bepul-darslik` shunday
+   *          ishlatardi: u yerda qator sahifadagi YAGONA havola edi,
+   *          hero da esa u suratning qo'shimchasi. HOZIRDA
+   *          CHAQIRILMAYDI (qator 2026-08-31 da olib tashlandi), lekin
+   *          qoidasi ham, uslubi ham joyida turibdi.
    */
   variant?: "pin" | "row";
 }

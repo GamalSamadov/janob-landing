@@ -391,11 +391,19 @@ export function AdminForm({ initial }: { initial: Content }) {
               onChange={(e) => patch({ instagramUrl: e.target.value })}
             />
           </Field>
-          {/* YouTube FAQAT `/challange` sahifasida ko'rinadi — hero dagi
-              ikkita belgi 2026-08-16 da qotirilgan va unga tegilmadi. */}
+          {/* YouTube HOZIRCHA HECH QAYERDA CHIQMAYDI. Uning yagona
+              o'rni `/bepul-darslik` dagi obuna qatori edi va u qator
+              2026-08-31 da olib tashlandi; hero dagi ikkita belgi esa
+              2026-08-16 da qotirilgan va unga tegilmadi.
+
+              Maydon SHU SABABLI turibdi: havola saqlanib qoladi va
+              obuna qatori qaytarilsa, uni qaytadan yozib chiqish shart
+              emas. Izoh esa haqiqatni aytadi — nimanidir boshqaraman
+              deb turgan, aslida hech narsani boshqarmaydigan maydon
+              maydon yo'qligidan ham yomon. */}
           <Field
             label="YouTube havolasi"
-            hint="Faqat /challange sahifasida. Bo'sh qoldirsangiz ko'rinmaydi."
+            hint="Hozircha saytda ko'rinmaydi — obuna qatori olib tashlangan."
           >
             <input
               className="admin-input mt-2"

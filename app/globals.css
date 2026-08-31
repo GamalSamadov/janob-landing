@@ -5568,7 +5568,8 @@ textarea.admin-input {
 }
 
 /* ============================================================================
-   CHALLANGE SAHIFASI (`/challange`) — 2026-08-25.
+   BEPUL DARSLIK SAHIFASI (`/bepul-darslik`) — 2026-08-25.
+   (marshrut 2026-08-31 gacha `/challange` deb atalgan)
 
    TALAB BITTA VA U QAT'IY (muallif): "telefonda ochilganida bularning
    hammasi takma-tak ochilishi kerak. eng muhumi video va uni tagidagi
@@ -5663,20 +5664,29 @@ textarea.admin-input {
    `52svh * 16 / 9` — eni shunday bo'lsinki, balandligi ekranning 52% i
    chiqsin.
 
-   BYUDJET IKKI MARTA O'ZGARDI va ikkalasi ham o'lchovdan chiqqan
-   (2026-08-30). Avval 52% dan 46% ga TUSHIRILDI: player kerakli
-   daqiqada videoning tagida o'z knopkasini chiqaradi va o'sha band
-   bo'sh holatdagi 70px emas, 125px joy oladi — eski byudjetda sahifa
-   aynan o'shanda 4px ga oshib ketardi. So'ng izoh matni olib
-   tashlangach (muallif talabi) 59px bo'shadi va byudjet 52% ga
-   QAYTARILDI: bo'shagan joyning egasi video, chunki sahifa o'sha video
-   uchun bor.
+   BYUDJET UCH MARTA O'ZGARDI va uchalasi ham o'lchovdan chiqqan.
 
-   Kompyuterda cheklovni `44rem` beradi (1280x800 da video 704x396),
-   telefonda esa ekran eni. Uchta chegaradan eng kichigi olinadi. */
+   1) 52% -> 46% (2026-08-30): player kerakli daqiqada videoning tagida
+      o'z knopkasini chiqaradi va o'sha band bo'sh holatdagi 70px emas,
+      125px joy oladi — eski byudjetda sahifa aynan o'shanda 4px ga
+      oshib ketardi.
+   2) 46% -> 52% (2026-08-30): izoh matni olib tashlangach 59px bo'shadi
+      va byudjet qaytarildi — bo'shagan joyning egasi video, chunki
+      sahifa o'sha video uchun bor.
+   3) 52% -> 46% (2026-08-31): sarlavha va uning ostidagi matn
+      UZAYDI (bir qatorlik izoh o'rniga ikki qatorlik va'da, ikki
+      qatorlik sarlavha o'rniga uch qatorlik). Obuna bloki ketgani
+      ~70px bo'shatdi, matn esa undan ko'proq oldi — ya'ni 1-banddagi
+      4px lik oshish qaytib keldi va past ekranlarda kattalashdi.
+      O'lchandi (knopka bandi ochiq, 125px): eski byudjetda sahifa
+      1366x768 da 17px, 1440x700 da 46px, 1024x640 da 56px oshib
+      ketgan edi; 46% da mos ravishda 0, 4 va 18px qoldi.
+
+   Kompyuterda cheklovni `44rem` beradi, telefonda esa ekran eni.
+   Uchta chegaradan eng kichigi olinadi. */
 .chal-video {
   position: relative;
-  width: min(100%, calc(52svh * 16 / 9), 44rem);
+  width: min(100%, calc(46svh * 16 / 9), 44rem);
   --chal-radius: clamp(14px, 2.6vw, 22px);
 }
 
@@ -5750,19 +5760,13 @@ textarea.admin-input {
   display: none;
 }
 
-/* "Menga obuna bo'ling" — knopkaning o'rnida qolgan sokin ilinma.
+/* `.chal-follow` ("Menga obuna bo'ling") VA U BILAN BIRGA BUTUN OBUNA
+   BLOKI OLIB TASHLANDI (muallif talabi, 2026-08-31) — izohi
+   `app/bepul-darslik/page.tsx` da.
 
-   ATAYLAB KNOPKA EMAS (izohi `page.tsx` da): sahifadagi yagona harakat
-   endi player ning ichida va diqqat o'sha yerda qolishi kerak. Shuning
-   uchun bu matn izohdan bir pog'ona QUYUQROQ (ko'zga tashlanadi), lekin
-   knopkaga o'xshamaydi — na yuzasi bor, na qirrasi. */
-.chal-follow {
-  margin-top: clamp(0.1rem, 0.8svh, 0.6rem);
-  font-size: clamp(0.95rem, 0.85rem + 0.45vw, 1.15rem);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  color: var(--text);
-}
+   `.smini-row` esa QOLDIRILDI ataylab: u `SocialMini` ning `row`
+   ko'rinishini bezaydi, ya'ni komponentning o'z shartnomasi. Qoida
+   o'chirilsa, u ko'rinish kelajakda chaqirilganda bezaksiz chiqardi. */
 
 /* OBUNA QATORI — hero dagi `.smini` ning oqimga tushgan ko'rinishi.
 
@@ -5811,14 +5815,35 @@ textarea.admin-input {
   .chal-shell {
     gap: clamp(0.4rem, 1.2svh, 0.8rem);
   }
+  /* 40% -> 36% (2026-08-31), sababi yuqoridagi 3-band bilan bir xil:
+     matn uzaygach eski byudjet yetmay qoldi. O'lchandi — 667x375 da
+     sahifa 5px, 844x390 da 3px oshib turgan edi. */
   .chal-video {
-    width: min(100%, calc(40svh * 16 / 9), 44rem);
+    width: min(100%, calc(36svh * 16 / 9), 44rem);
   }
   .chal-title {
     font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2rem);
   }
-  .chal-follow {
-    margin-top: 0;
-    font-size: clamp(0.85rem, 0.8rem + 0.3vw, 1rem);
+
+  /* MATN USTUNLARI KENGAYADI — bu blokdagi eng katta yutuq (2026-08-31).
+
+     `18ch` va `34ch` TIK ekran uchun o'lchangan: u yerda en tanqis,
+     balandlik esa yetarli. Yotiq holatda hammasi teskari — 667x375 da
+     en 667px, balandlik esa 375px. O'sha tor ustunlarda sarlavha uch,
+     matn ikki qatorga bo'linardi va har bir ortiqcha qator eng tanqis
+     narsani, ya'ni BALANDLIKNI yerdi.
+
+     Kenglikni bergach sarlavha ikki, matn bir qatorga tushdi va 42px
+     bo'shadi (o'lchandi, 667x375: tor ustunda 42px oshiq, keng
+     ustunda 0). Ya'ni bu bezak emas: yotiq holatda sahifa aynan shu
+     ikki qator hisobiga ekranga sig'adi.
+
+     TIK EKRANGA TA'SIR QILMAYDI: telefonda ustun eni baribir ekrandan
+     kichik (375px), ya'ni `max-width` bu yerda cheklamaydi. */
+  .chal-title {
+    max-width: 40ch;
+  }
+  .chal-sub {
+    max-width: 60ch;
   }
 }

@@ -84,11 +84,11 @@ export interface Content {
      xabar yozmaydi, OBUNA bo'ladi. Har biri bo'sh qoldirilsa o'z belgisi
      umuman chizilmaydi.
 
-     Ikki joyda ishlatiladi va ro'yxati har joyda BIR XIL EMAS:
-       hero — surat ostidagi ikkita kichik belgi (Telegram, Instagram);
-       `/challange` — "Menga obuna bo'ling" ostidagi qator (uchalasi).
-     Farq ataylab: hero ning tartibi 2026-08-16 da qotirilgan va unga
-     tegilmadi. */
+     HOZIRDA FAQAT BITTA JOYDA ko'rinadi: hero — surat ostidagi ikkita
+     kichik belgi (Telegram, Instagram). Uchalasini `/bepul-darslik`
+     dagi "Menga obuna bo'ling" qatori chizardi va o'sha qator
+     2026-08-31 da olib tashlandi, ya'ni `youtubeUrl` saqlanadi-yu,
+     hech qayerda chiqmaydi. */
   telegramChannelUrl: string;
   instagramUrl: string;
   youtubeUrl: string;

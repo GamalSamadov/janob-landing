@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { getContent } from "@/lib/content";
-import { SocialMini } from "@/components/SocialMini";
 
-/* Ijtimoiy tarmoq havolalari boshqaruv panelidan o'zgartiriladi,
-   shuning uchun sahifa har so'rovda qayta hisoblanadi — asosiy
-   sahifadagi qoidaning aynan o'zi.
+/* SAHIFA YANA STATIK. Unda o'zgaruvchi ma'lumot qolmadi — matn ham,
+   video ham koddan keladi va `content.json` ga umuman murojaat
+   qilinmaydi.
 
-   Sahifa bir muddat STATIK bo'lib turgan edi (knopka olib tashlangach
-   o'zgaruvchi ma'lumot qolmagandi); obuna qatori qo'shilishi bilan u
-   yana dinamikga qaytdi. */
-export const dynamic = "force-dynamic";
+   TARIXI IKKI MARTA AYLANDI: avval statik edi, obuna qatori
+   qo'shilishi bilan `force-dynamic` ga o'tdi (havolalar boshqaruv
+   panelidan kelardi), qator olib tashlangach esa yana statikga qaytdi
+   (muallif talabi, 2026-08-31).
+
+   Boshqaruv panelidan boshqariladigan biror narsa QAYTSA —
+   `export const dynamic = "force-dynamic"` ni ham tiklash kerak. */
 
 export const metadata: Metadata = {
   title: "Videoni ko'ring",
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
 
   /* Sayt xaritasiga ham qo'shilmagan (`app/sitemap.ts`) — ikkalasi bitta
      qarorning ikki tomoni. */
-  alternates: { canonical: "/challange" },
+  alternates: { canonical: "/bepul-darslik" },
 };
 
 /* VIDALYTICS — sotuvchi bergan kod, qo'l tegmagan.
@@ -67,9 +68,7 @@ const VID_SRC =
   VID_ID +
   "', 'https://fast.vidalytics.com/embeds/3rkrl5_r/_iTkeRZNw0jSwdf7/');";
 
-export default async function ChallangePage() {
-  const content = await getContent();
-
+export default function BepulDarslikPage() {
   return (
     <main className="chal">
       {/* HERO NING O'Z FONI, o'zgartirilmagan holda (muallif talabi:
@@ -91,12 +90,13 @@ export default async function ChallangePage() {
         {/* Olovli qism MAVZUNI aytadi, quyuq qism NIMA QILISHNI — hero
             dagi bilan bir xil bo'linish. */}
         <h1 className="t-hero chal-title">
-          <span className="t-flame">Videoni</span> pasda ko&apos;rishingiz
-          mumkin
+          <span className="t-flame">AI bilan telegram bot yasab,</span> birinchi
+          $200 ni ishlash
         </h1>
 
         <p className="t-lead chal-sub">
-          Foydali bo&apos;ladi degan umiddaman :)
+          50 daqiqa. Oxirigacha ko&apos;ring — men ishlatgan promptni video
+          oxirida beraman.
         </p>
 
         {/* O'lchovni O'RAM belgilaydi, sotuvchining `div` i emas: u
@@ -111,44 +111,23 @@ export default async function ChallangePage() {
           />
         </div>
 
-        {/* VIDEODAN KEYIN IKKITA NARSA BOR EDI, IKKALASI HAM KETDI
-            (muallif talabi, 2026-08-30).
+        {/* VIDEODAN KEYIN ENDI HECH NARSA YO'Q va bu uchta qadamning
+            yig'indisi (muallif talabi, 2026-08-30 va 2026-08-31).
 
-            Birinchisi — KNOPKA ("pasdagi knopka kerak emas ekan").
+            Birinchi ketgani — KNOPKA ("pasdagi knopka kerak emas ekan").
             Sababi player ning o'zida: Vidalytics kerakli daqiqada
-            videoning tagida O'Z knopkasini chiqaradi. Ya'ni sahifada
-            ikkita harakat bo'lib qolgan va ikkalasi bir xil ishni
-            qilardi — o'quvchi qaysi birini bosishni o'ylab qolardi.
+            videoning tagida O'Z knopkasini chiqaradi, ya'ni sahifada
+            ikkita harakat bo'lib qolgandi va ikkalasi bir xil ishni
+            qilardi.
 
-            Ikkinchisi — IZOH MATNI ("kel shu text o'zi kerak emas").
-            U "videoni to'liq ko'rib chiqing va PASDAGI knopkani bosing"
-            deb turardi. Knopka ketgach ko'rsatkich noto'g'ri tomonga
-            ishora qila boshlagan edi: player knopkasi videoning tagida,
-            ya'ni o'sha matndan YUQORIDA chiqadi.
+            Ikkinchisi — IZOH MATNI ("kel shu text o'zi kerak emas"). U
+            "PASDAGI knopkani bosing" deb turardi va knopka ketgach
+            ko'rsatkich noto'g'ri tomonga ishora qila boshlagan edi.
 
-            Qolgani — sokin ilinma. U ataylab knopka EMAS: sahifadagi
-            yagona harakat player ning ichida va diqqat o'sha yerda
-            qolishi kerak. */}
-        <p className="chal-follow">Menga obuna bo&apos;ling</p>
-
-        {/* OBUNA QATORI (muallif talabi, 2026-08-30): Telegram kanali,
-            Instagram va YouTube.
-
-            Hero dagi AYNI komponent, faqat `row` ko'rinishida: u yerda
-            qator suratning burchagiga yopishtirilgan va belgilari 15px,
-            bu yerda esa u oqimning ichida, markazda va 22px. Farqning
-            sababi vazifada — hero da bu suratning qo'shimchasi, bu yerda
-            esa sahifadagi YAGONA havola.
-
-            Uchalasi ham bo'sh bo'lsa qator umuman chizilmaydi va bu
-            komponentning o'z qoidasi: hech qayerga olib bormaydigan
-            belgi bezakdan ham yomon. */}
-        <SocialMini
-          variant="row"
-          telegramChannelUrl={content.telegramChannelUrl}
-          instagramUrl={content.instagramUrl}
-          youtubeUrl={content.youtubeUrl}
-        />
+            Uchinchisi — OBUNA BLOKI ("umuman kerak emas"): "Menga obuna
+            bo'ling" matni va uning ostidagi uchta belgi (Telegram,
+            Instagram, YouTube). Shu bilan sahifadagi YAGONA harakat
+            player ning ichida qoldi — ko'zlangan holat aynan shu. */}
       </div>
 
       <Script id={VID_ID + "__loader"} dangerouslySetInnerHTML={{ __html: VID_SRC }} />
