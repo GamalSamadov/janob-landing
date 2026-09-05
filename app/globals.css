@@ -5683,8 +5683,13 @@ textarea.admin-input {
       ketgan edi; 46% da mos ravishda 0, 4 va 18px qoldi.
    4) 46% -> 50% (2026-09-05): video YouTube ga ko'chdi va o'sha 125px
       lik band bilan birga ketdi. O'rniga sahifaning O'Z knopkasi keldi,
-      lekin u arzonroq — 44px va tepasida ~6px oraliq. Ya'ni ~75px
+      lekin u arzonroq — 47px va tepasida ~6px oraliq. Ya'ni ~70px
       bo'shadi va odat bo'yicha bo'shagan joy videoga berildi.
+      O'lchandi (prod): 50% da knopka ostidagi zaxira 1024x640 da
+      28px, 1440x700 da 34px, 1366x768 da 49px, ya'ni eng tor uchta
+      o'lchamda ham sahifa skrollsiz. Telefonda byudjet umuman
+      cheklamaydi — u yerda enni ekran beradi (375x812 da 214px
+      zaxira).
 
    Kompyuterda cheklovni `44rem` beradi, telefonda esa ekran eni.
    Uchta chegaradan eng kichigi olinadi. */
@@ -5801,11 +5806,12 @@ textarea.admin-input {
      matn uzaygach eski byudjet yetmay qoldi. O'lchandi — 667x375 da
      sahifa 5px, 844x390 da 3px oshib turgan edi.
 
-     36% DA QOLDI (2026-09-05) va bu ehtiyotkorlik: YouTube ga o'tish
-     tik ekranda joy bo'shatdi, yotiq holatda esa aksincha —
-     sahifaning o'z knopkasi (44px) qo'shildi, u yerda esa har bir
-     piksel hisobda. Byudjetni ko'tarish uchun asos yo'q, tushirish
-     uchun ham. */
+     36% DA QOLDI (2026-09-05): YouTube ga o'tish tik ekranda joy
+     bo'shatdi, yotiq holatda esa aksincha — sahifaning o'z knopkasi
+     (44px) qo'shildi. O'lchandi (prod, shu byudjetda): 667x375 da
+     knopka ostida 48px, 844x390 da 50px zaxira qoldi, ya'ni byudjetni
+     tushirishga sabab yo'q. Ko'tarishga ham: zaxira aynan shu ikki
+     o'lchamda eng kichik. */
   .chal-video {
     width: min(100%, calc(36svh * 16 / 9), 44rem);
   }
