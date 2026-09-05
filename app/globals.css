@@ -5657,19 +5657,19 @@ textarea.admin-input {
 
 /* VIDEO ENINI EKRAN BALANDLIGI BELGILAYDI — sahifadagi eng muhim qator.
 
-   Sotuvchining `div` i `width: 100%` va `padding-top: 56.25%` bilan
-   keladi, ya'ni balandligini O'ZI enidan oladi (16:9). Demak enni
+   `iframe` o'ramni to'liq qoplaydi, o'ram esa nisbatini `aspect-ratio`
+   dan oladi (16:9), ya'ni balandligini enidan hisoblaydi. Demak enni
    cheklash — balandlikni cheklashning yagona yo'li.
 
-   `52svh * 16 / 9` — eni shunday bo'lsinki, balandligi ekranning 52% i
+   `50svh * 16 / 9` — eni shunday bo'lsinki, balandligi ekranning 50% i
    chiqsin.
 
-   BYUDJET UCH MARTA O'ZGARDI va uchalasi ham o'lchovdan chiqqan.
+   BYUDJET TO'RT MARTA O'ZGARDI va to'rttasi ham o'lchovdan chiqqan.
 
-   1) 52% -> 46% (2026-08-30): player kerakli daqiqada videoning tagida
-      o'z knopkasini chiqaradi va o'sha band bo'sh holatdagi 70px emas,
-      125px joy oladi — eski byudjetda sahifa aynan o'shanda 4px ga
-      oshib ketardi.
+   1) 52% -> 46% (2026-08-30): o'sha paytdagi player (Vidalytics)
+      kerakli daqiqada videoning tagida o'z knopkasini chiqarardi va
+      o'sha band bo'sh holatdagi 70px emas, 125px joy olardi — eski
+      byudjetda sahifa aynan o'shanda 4px ga oshib ketardi.
    2) 46% -> 52% (2026-08-30): izoh matni olib tashlangach 59px bo'shadi
       va byudjet qaytarildi — bo'shagan joyning egasi video, chunki
       sahifa o'sha video uchun bor.
@@ -5681,83 +5681,65 @@ textarea.admin-input {
       O'lchandi (knopka bandi ochiq, 125px): eski byudjetda sahifa
       1366x768 da 17px, 1440x700 da 46px, 1024x640 da 56px oshib
       ketgan edi; 46% da mos ravishda 0, 4 va 18px qoldi.
+   4) 46% -> 50% (2026-09-05): video YouTube ga ko'chdi va o'sha 125px
+      lik band bilan birga ketdi. O'rniga sahifaning O'Z knopkasi keldi,
+      lekin u arzonroq — 44px va tepasida ~6px oraliq. Ya'ni ~75px
+      bo'shadi va odat bo'yicha bo'shagan joy videoga berildi.
 
    Kompyuterda cheklovni `44rem` beradi, telefonda esa ekran eni.
    Uchta chegaradan eng kichigi olinadi. */
 .chal-video {
   position: relative;
-  width: min(100%, calc(46svh * 16 / 9), 44rem);
+  width: min(100%, calc(50svh * 16 / 9), 44rem);
+  /* Nisbat endi O'RAMDA. Ilgari uni sotuvchining `div` i
+     `padding-top: 56.25%` bilan o'zi yasardi; `iframe` esa bunday
+     qilmaydi — unga balandlik ochiq aytilishi kerak. */
+  aspect-ratio: 16 / 9;
   --chal-radius: clamp(14px, 2.6vw, 22px);
-}
-
-/* RAMKA O'RAMDA EMAS, VIDEONING O'ZIDA (muallif ko'rgan holat,
-   2026-08-30: "bu knopkani atrofida keraksiz shadow bor").
-
-   Ilgari yumaloq qirra, ichki soch chiziq va tashqi soya `.chal-video`
-   ning O'ZIDA edi va bo'sh holatda bu to'g'ri ko'rinardi — o'ram
-   videodan bir piksel ham katta emasdi.
-
-   KEYIN PLAYER O'Z KNOPKASINI CHIQARDI. Vidalytics videoning tagida
-   knopka uchun band ochadi (`.CallToActionsManager__wrapper`, 70px) va
-   o'sha band ham o'ramning ICHIDA. Ya'ni o'ram 70px ga o'sib, ramka
-   knopkani ham o'rab olardi: knopka atrofida kulrang yuza, qirra va
-   soya paydo bo'lardi — muallif ko'rgan narsa aynan shu.
-
-   Endi ramka `.Tech__wrapper` da — bu videoning o'z yuzasi va u
-   `absolute` bo'lib aynan 16:9 maydonni qoplaydi (o'lchandi: o'ram
-   335x258 bo'lganda u 335x188, ya'ni knopka bandi undan tashqarida
-   qoladi). Player knopkasi shu sababli endi ochiq fonda, hech qanday
-   ramkasiz turadi.
-
-   SINF SOTUVCHINIKI va buni bilib qo'ygan ma'qul: nomi o'zgarsa, ramka
-   YO'QOLADI — sahifa buzilmaydi, video shunchaki to'g'ri burchak bilan
-   chiqadi. Shu sababli bu yerda faqat BEZAK turadi; o'lcham, joylashuv
-   va sig'im hisobi o'ramning o'zida qoladi. */
-.chal-video .Tech__wrapper {
   border-radius: var(--chal-radius);
   overflow: hidden;
+  /* `iframe` yuklanguncha joy bo'sh oq dog' bo'lib turmasin. */
+  background: rgba(28, 22, 16, 0.06);
   /* Qirra va soya `.glass` bilan bir qonunda: ichkarida oq soch chiziq,
      tashqarida iliq qora soya. `backdrop-filter` ATAYLAB yo'q — ortida
      video turadi, ya'ni xiralatiladigan fon ko'rinmaydi, narxi esa
-     qoladi. */
+     qoladi.
+
+     RAMKA ENDI YANA O'RAMDA va bu Vidalytics davridagi qarorning
+     bekor qilinishi emas. O'shanda ramka videoning o'z yuzasiga
+     (`.Tech__wrapper`) ko'chirilgandi, chunki o'ram videodan 70px
+     baland edi — player knopkasi uchun ajratilgan band ham uning
+     ichida qolardi va ramka o'sha bo'sh tasmani ham o'rab olardi.
+     Endi o'ramda videodan boshqa hech narsa yo'q: `aspect-ratio` unga
+     aynan 16:9 beradi. */
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
     inset 0 0 0 1px rgba(28, 22, 16, 0.08),
     0 26px 60px -30px rgba(74, 47, 12, 0.55);
+  /* SAFARI UCHUN. `overflow: hidden` o'z qatlamiga ega bolani —
+     `iframe` aynan shunday — har doim ham yumaloq burchak bo'ylab
+     kesavermaydi va video burchaklari to'g'ri chiqib qolardi. Mask
+     kesishni boshqa yo'l bilan, kompozitsiya bosqichida bajaradi.
+     Boshqa brauzerlarda ortiqcha emas: natija bir xil. */
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  mask-image: radial-gradient(white, black);
 }
 
-/* Player kelgunicha joy bo'sh qolmasin. Faqat 16:9 maydon — knopka
-   bandiga tegmaydi, ya'ni yuqoridagi muammo bu yerda takrorlanmaydi. */
-.chal-video::before {
-  content: "";
+.chal-video iframe {
   position: absolute;
-  inset: 0 0 auto 0;
-  aspect-ratio: 16 / 9;
-  z-index: -1;
-  border-radius: var(--chal-radius);
-  background: rgba(28, 22, 16, 0.06);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* `iframe` ning tug'ma ramkasi — u bo'lmasa yumaloq qirraning ichida
+     kulrang chiziq ko'rinib qolardi. */
+  border: 0;
+  display: block;
 }
 
-/* PLAYERNING BO'SH "CTA" BANDI YASHIRINADI (o'lchov asosida, 2026-08-25).
-
-   Vidalytics `div` ning ichiga ikkita narsa qo'yadi: videoning o'zi
-   (`.Tech__wrapper`, 16:9 — ya'ni `padding-top: 56.25%` aynan shunga
-   ajratilgan) va undan KEYIN `.CallToActionsManager__wrapper` —
-   balandligi 70px qilib qotirilgan band. U player ichida chiqadigan
-   knopka uchun ajratilgan joy.
-
-   Bu sahifada u BO'SH: o'lchandi — `innerHTML` uzunligi 0, bolasi 0 ta.
-   Ya'ni ramkaning ichida 70 pikselli quruq tasma paydo bo'lardi va video
-   ramkaning yarmida osilib qolgandek ko'rinardi. Ustiga u telefonda
-   byudjetning 70 pikselini yeb turadi — sahifa esa bitta ekranga
-   sig'ishi kerak.
-
-   `:empty` ATAYLAB — `display: none` emas. Agar muallif kelajakda
-   Vidalytics ning o'z knopkasini sozlasa, band bo'sh bo'lmay qoladi,
-   selektor mos kelmaydi va knopka o'z-o'zidan ko'rinadi. Ya'ni bu
-   yashirish emas, "bo'sh joyni egallama" degani. */
-.chal-video .CallToActionsManager__wrapper:empty {
-  display: none;
+/* Knopka videodan bir oz uzoqroq: u alohida QADAM, videoning davomi
+   emas. Oraliq `svh` da — past ekranda o'zi siqiladi. */
+.chal-cta {
+  margin-top: clamp(0.1rem, 0.8svh, 0.6rem);
 }
 
 /* `.chal-follow` ("Menga obuna bo'ling") VA U BILAN BIRGA BUTUN OBUNA
@@ -5817,12 +5799,22 @@ textarea.admin-input {
   }
   /* 40% -> 36% (2026-08-31), sababi yuqoridagi 3-band bilan bir xil:
      matn uzaygach eski byudjet yetmay qoldi. O'lchandi — 667x375 da
-     sahifa 5px, 844x390 da 3px oshib turgan edi. */
+     sahifa 5px, 844x390 da 3px oshib turgan edi.
+
+     36% DA QOLDI (2026-09-05) va bu ehtiyotkorlik: YouTube ga o'tish
+     tik ekranda joy bo'shatdi, yotiq holatda esa aksincha —
+     sahifaning o'z knopkasi (44px) qo'shildi, u yerda esa har bir
+     piksel hisobda. Byudjetni ko'tarish uchun asos yo'q, tushirish
+     uchun ham. */
   .chal-video {
     width: min(100%, calc(36svh * 16 / 9), 44rem);
   }
   .chal-title {
     font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2rem);
+  }
+  /* Knopka yotiq holatda matnga yopishadi — oraliq eng qimmat piksel. */
+  .chal-cta {
+    margin-top: 0;
   }
 
   /* MATN USTUNLARI KENGAYADI — bu blokdagi eng katta yutuq (2026-08-31).

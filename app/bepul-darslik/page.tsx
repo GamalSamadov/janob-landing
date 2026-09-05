@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Script from "next/script";
+import { Pill } from "@/components/Pill";
 
-/* SAHIFA YANA STATIK. Unda o'zgaruvchi ma'lumot qolmadi — matn ham,
-   video ham koddan keladi va `content.json` ga umuman murojaat
+/* SAHIFA STATIK. Unda o'zgaruvchi ma'lumot yo'q — matn ham, video ham,
+   havola ham koddan keladi va `content.json` ga umuman murojaat
    qilinmaydi.
 
    TARIXI IKKI MARTA AYLANDI: avval statik edi, obuna qatori
@@ -32,41 +32,38 @@ export const metadata: Metadata = {
   alternates: { canonical: "/bepul-darslik" },
 };
 
-/* VIDALYTICS — sotuvchi bergan kod, qo'l tegmagan.
+/* VIDEO ENDI YOUTUBE DA (muallif talabi, 2026-09-05).
 
-   Ikki qismdan iborat: ID si oldindan ma'lum bo'sh `div` va uni
-   to'ldiradigan skript. Skript o'sha `div` ni `document` dan ID bo'yicha
-   qidiradi, ya'ni u DOM da allaqachon turgan bo'lishi shart.
+   Ilgari bu yerda Vidalytics turgan edi: sotuvchining bo'sh `div` i va
+   uni to'ldiradigan inline skript (`next/script`). U ikki sababga ko'ra
+   ketdi va ikkalasi ham bir kunda ko'rindi — xizmatning limiti tugab,
+   player o'rniga "This video can't be played right now" chiqib qoldi,
+   ya'ni sahifa tirik bo'lsa-da, o'zining yagona vazifasini bajarmay
+   qo'ygandi. Ikkinchisi — dars allaqachon YouTube da yotibdi, ya'ni
+   pullik xizmat shu yerda hech narsa qo'shmasdi.
 
-   `strategy` BERILMAGAN, ya'ni sukut bo'yicha `afterInteractive`
-   (`node_modules/next/dist/docs` → components/script.md). Aynan shu
-   kerak: kod gidratatsiyadan KEYIN ishga tushadi, demak `div` joyida
-   bo'ladi. `beforeInteractive` bu yerda buzardi — u sahifa chizilishidan
-   oldin ishlaydi va skript qidirgan `div` ni topmasdi.
+   YOUTUBE `IFRAME` NING TARKI: uchinchi tomon skripti ham, `next/script`
+   ham endi kerak emas — brauzerning o'z elementi kifoya. Shu sababli
+   sahifada `use client` ham, gidratatsiyadan keyin ishlaydigan kod ham
+   qolmadi.
 
-   `id` MAJBURIY: hujjatning o'z ogohlantirishi — "An `id` property must
-   be assigned for inline scripts in order for Next.js to track and
-   optimize the script". U bir vaqtning o'zida ikki marta ishga
-   tushishdan ham saqlaydi.
+   `rel=0` — video tugagach chetdan kelgan tavsiyalar chiqmasin (YouTube
+   uni butunlay o'chirmaydi, lekin shu kanalning o'zi bilan cheklaydi).
+   `playsinline=1` — iPhone videoni butun ekranga otib yubormasin, sahifa
+   ko'rinib tursin: knopka aynan videoning tagida va u ko'zdan
+   yo'qolmasligi kerak. `modestbranding=1` esa yuqori burchakdagi
+   logotipni so'ndiradi. */
+const YT_ID = "W5hlz5L4vQ8";
+const YT_SRC = `https://www.youtube.com/embed/${YT_ID}?rel=0&playsinline=1&modestbranding=1`;
 
-   `dangerouslySetInnerHTML` bu yerda YAGONA yo'l va u xavfsiz: matn
-   o'zgarmas satr, unga foydalanuvchi kiritgan hech narsa qo'shilmaydi.
-   React esa bola sifatida berilgan matnni HTML uchun ekranlab qo'yardi
-   va skript buzilardi (aynan shu sabab `page.tsx` dagi JSON-LD da ham
-   yozilgan). */
-const VID_ID = "vidalytics_embed__iTkeRZNw0jSwdf7";
-const VID_SRC =
-  "(function (v, i, d, a, l, y, t, c, s) {\n" +
-  "    y='_'+d.toLowerCase();c=d+'L';if(!v[d]){v[d]={};}if(!v[c]){v[c]={};}if(!v[y]){v[y]={};}var vl='Loader',vli=v[y][vl],vsl=v[c][vl + 'Script'],vlf=v[c][vl + 'Loaded'],ve='Embed';\n" +
-  "    if (!vsl){vsl=function(u,cb){\n" +
-  "        if(t){cb();return;}s=i.createElement(\"script\");s.type=\"text/javascript\";s.async=1;s.src=u;\n" +
-  "        if(s.readyState){s.onreadystatechange=function(){if(s.readyState===\"loaded\"||s.readyState==\"complete\"){s.onreadystatechange=null;vlf=1;cb();}};}else{s.onload=function(){vlf=1;cb();};}\n" +
-  "        i.getElementsByTagName(\"head\")[0].appendChild(s);\n" +
-  "    };}\n" +
-  "    vsl(l+'loader.min.js',function(){if(!vli){var vlc=v[c][vl];vli=new vlc();}vli.loadScript(l+'player.min.js',function(){var vec=v[d][ve];t=new vec();t.run(a);});});\n" +
-  "})(window, document, 'Vidalytics', '" +
-  VID_ID +
-  "', 'https://fast.vidalytics.com/embeds/3rkrl5_r/_iTkeRZNw0jSwdf7/');";
+/* SAHIFADAGI YAGONA HARAKAT — Telegram bot (muallif bergan havola,
+   2026-09-05).
+
+   Ilgari knopka player ning ICHIDA edi: Vidalytics kerakli daqiqada
+   videoning tagida o'z knopkasini chiqarardi va sahifada o'zining
+   knopkasi bo'lishi shart emasdi. YouTube da bunday narsa yo'q —
+   demak knopka sahifaga qaytadi. */
+const BOT_URL = "https://t.me/janob_dasturchi_bot?start=kurs";
 
 export default function BepulDarslikPage() {
   return (
@@ -99,38 +96,38 @@ export default function BepulDarslikPage() {
           oxirida beraman.
         </p>
 
-        {/* O'lchovni O'RAM belgilaydi, sotuvchining `div` i emas: u
-            `width: 100%` va `padding-top: 56.25%` bilan keladi, ya'ni
-            o'ramning enidan 16:9 balandlik yasaydi. O'ram esa enini
-            EKRAN BALANDLIGIDAN oladi (`globals.css`) — shu tufayli video
-            hech qachon knopkani ekrandan itarib yubormaydi. */}
+        {/* O'lchovni O'RAM belgilaydi, `iframe` emas: `iframe` o'ramni
+            to'liq qoplaydi, o'ram esa enini EKRAN BALANDLIGIDAN oladi
+            (`globals.css`) — shu tufayli video hech qachon knopkani
+            ekrandan itarib yubormaydi.
+
+            `title` MAJBURIY: `iframe` ning o'zi ekran o'quvchi uchun
+            nomsiz ramka, ya'ni "nima bu?" degan savol javobsiz qolardi.
+
+            `allow` dagi ro'yxat YouTube niki — undan faqat `autoplay`
+            olib tashlangan: bu sahifada video o'z-o'zidan boshlanmaydi
+            (tovush bilan boshlansa brauzer baribir to'xtatadi, ovozsiz
+            boshlansa esa o'quvchi videoning boshini o'tkazib yuboradi).
+            `allowFullScreen` esa 50 daqiqalik dars uchun shart. */}
         <div className="chal-video">
-          <div
-            id={VID_ID}
-            style={{ width: "100%", position: "relative", paddingTop: "56.25%" }}
+          <iframe
+            src={YT_SRC}
+            title="AI bilan telegram bot yasab, birinchi $200 ni ishlash"
+            loading="lazy"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
           />
         </div>
 
-        {/* VIDEODAN KEYIN ENDI HECH NARSA YO'Q va bu uchta qadamning
-            yig'indisi (muallif talabi, 2026-08-30 va 2026-08-31).
-
-            Birinchi ketgani — KNOPKA ("pasdagi knopka kerak emas ekan").
-            Sababi player ning o'zida: Vidalytics kerakli daqiqada
-            videoning tagida O'Z knopkasini chiqaradi, ya'ni sahifada
-            ikkita harakat bo'lib qolgandi va ikkalasi bir xil ishni
-            qilardi.
-
-            Ikkinchisi — IZOH MATNI ("kel shu text o'zi kerak emas"). U
-            "PASDAGI knopkani bosing" deb turardi va knopka ketgach
-            ko'rsatkich noto'g'ri tomonga ishora qila boshlagan edi.
-
-            Uchinchisi — OBUNA BLOKI ("umuman kerak emas"): "Menga obuna
-            bo'ling" matni va uning ostidagi uchta belgi (Telegram,
-            Instagram, YouTube). Shu bilan sahifadagi YAGONA harakat
-            player ning ichida qoldi — ko'zlangan holat aynan shu. */}
+        {/* `pill-white` — sahifadagi YAGONA harakat, shuning uchun u
+            hero dagi birinchi knopka bilan bir xil olovli yuzada.
+            `external`: bot yangi varaqda ochiladi va o'quvchi videoga
+            qaytib kela oladi — dars 50 daqiqa, ya'ni knopka ko'pincha
+            videoning o'rtasida bosiladi. */}
+        <Pill href={BOT_URL} external className="pill-white chal-cta">
+          Bu yerga bosing
+        </Pill>
       </div>
-
-      <Script id={VID_ID + "__loader"} dangerouslySetInnerHTML={{ __html: VID_SRC }} />
     </main>
   );
 }
