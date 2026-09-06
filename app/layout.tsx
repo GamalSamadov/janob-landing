@@ -90,6 +90,32 @@ export const metadata: Metadata = {
     },
   },
 
+  /* FACEBOOK DOMEN TASDIQI (muallif talabi, 2026-09-06) — reklama
+     kabinetidan olingan kod. Meta bu belgini domenning EGASI kimligini
+     bilish uchun so'raydi: tasdiqsiz domenga reklama yuritish, piksel
+     hodisalarini sozlash va havolaning ko'rinishini boshqarish
+     yopiladi.
+
+     `other` ATAYLAB: Next.js `verification` da Google, Yandex va Yahoo
+     uchun tayyor kalitlar beradi, Facebook uchun esa yo'q
+     (`node_modules/next/dist/docs` → functions/generate-metadata.md).
+     `other` dagi kalit `<meta name="...">` ga aynan o'zi bo'lib
+     tushadi, ya'ni natija Meta so'ragan qatorning aynan o'zi.
+
+     ILDIZ MAKETDA turgani ham ataylab: bu yerdan u sahifalarning
+     HAMMASIGA tarqaladi. Meta tekshiruvni odatda bosh sahifada
+     o'tkazadi, lekin reklama havolasi qaysi sahifaga tushishini
+     oldindan bilib bo'lmaydi.
+
+     KOD MAXFIY EMAS: u sahifa manbasida ochiq turadi va shundayligicha
+     ishlaydi — tasdiq kodning o'zi bilan emas, uni SHU domenga qo'ya
+     olganing bilan isbotlanadi. */
+  verification: {
+    other: {
+      "facebook-domain-verification": "6tr3uoy4nfq1a78adwjxfxxdydj3tc",
+    },
+  },
+
   /* Telefon raqami bo'lmagan sonlarni iOS o'z-o'zidan havolaga
      aylantiradi — narxlar va taymer raqamlari shundan aziyat chekardi. */
   formatDetection: { telephone: false, address: false, email: false },
