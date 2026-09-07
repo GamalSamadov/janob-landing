@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -121,6 +122,72 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false, address: false, email: false },
 };
 
+/* META PIKSELI — reklama kabinetidan olingan kod, ID muallifniki.
+
+   AVVAL FAQAT `/challange-darslik` DA EDI (2026-09-07) va o'sha kuni
+   ko'chirildi. Fikr shunday edi: reklama shu sahifaga tushadi, ya'ni
+   piksel ham faqat shu yerda tursin — u holda `/bepul-darslik` ga
+   Reels dan kelgan bepul trafik sanoqqa aralashmaydi.
+
+   AMALDA BU XATO BO'LDI. Muallifning targetologi pikselni topa
+   olmadi: u bosh sahifani ochib qaradi (odatdagi tekshiruv aynan
+   shunday boshlanadi va Meta Pixel Helper ham shu yerda ishga
+   tushadi) va u yerda hech narsa yo'q edi. Piksel bir sahifaga
+   berkitilgan bo'lsa, u ishlayotgani ham, ishlamayotgani ham
+   bilinmaydi.
+
+   OQIMLARNI AJRATISH BUNDAN ZARAR KO'RMAYDI va shuni bilib qo'yish
+   muhim: bo'linish pikselda emas, BOTNING boshlanish parametrida
+   (`?start=kurs` / `?start=challange`). Piksel esa har bir hodisaga
+   sahifaning to'liq manzilini qo'shib yuboradi, ya'ni kabinetning
+   o'zida manzil bo'yicha ajratsa bo'ladi. Ya'ni sahifaga berkitish
+   hech narsa yutmasdi, yo'qotardi.
+
+   `beforeInteractive` — ATAYLAB, garchi hujjat bu darajani analitika
+   uchun emas, "eng kerakli" skriptlar uchun tavsiya qilsa ham
+   (`node_modules/next/dist/docs` → components/script.md). Ikki sabab:
+
+   1) Shu daraja skriptni HUJJATNING `head` IGA qo'yadi ("Scripts with
+      `beforeInteractive` will always be injected inside the `head` of
+      the HTML document regardless of where it's placed in the
+      component"). Meta ning yo'riqnomasi ham aynan shuni so'raydi va
+      targetolog sahifa manbasini shu joydan qidiradi.
+   2) `PageView` gidratatsiyani kutmaydi. Reklama trafigida odam
+      sahifani bir necha soniyada tashlab ketishi odatiy hol — kech
+      yuborilgan hodisa umuman yuborilmagan hodisadir.
+
+   Hujjat `beforeInteractive` ni faqat ILDIZ MAKETGA qo'yishni talab
+   qiladi — shu sababli u shu yerda.
+
+   `id` MAJBURIY (hujjatning o'z ogohlantirishi) va u pikselning ikki
+   marta yuklanishidan saqlaydi: aks holda har bir ochilish ikkita
+   `PageView` bo'lib sanalardi.
+
+   `dangerouslySetInnerHTML` bu yerda YAGONA yo'l va u xavfsiz: matn
+   o'zgarmas satr, unga foydalanuvchi kiritgan hech narsa qo'shilmaydi.
+   React esa bola sifatida berilgan matnni HTML uchun ekranlab qo'yardi
+   va skript buzilardi. */
+const PIXEL_ID = "2155323465015470";
+
+const PIXEL_SRC = `!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '${PIXEL_ID}');
+fbq('track', 'PageView');`;
+
+/* JAVASCRIPTSIZ BRAUZER UCHUN — Meta bergan kodning ikkinchi qismi.
+   Skript ishlamaganda ochilish shu 1x1 rasm orqali sanaladi.
+
+   ID IKKALASIDA BIR XIL bo'lishi shart, shuning uchun u yuqorida
+   alohida o'zgaruvchida turadi — aks holda hodisalarning bir qismi
+   begona hisobga tushardi. */
+const PIXEL_NOSCRIPT = `<img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1"/>`;
+
 /* Telefonda brauzerning o'z paneli shu rangga bo'yaladi. U sahifaning eng
    tepasidagi rang bilan bir xil bo'lishi kerak — aks holda panel bilan
    hero orasida chok paydo bo'ladi. Sahifa yorug' rejimga o'tgach ikkala
@@ -138,6 +205,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        {/* Joylashuvi shartli: `beforeInteractive` skriptni baribir
+            `head` ga ko'chiradi (yuqoridagi izoh). `noscript` esa
+            aynan shu yerda qoladi — u `body` ga tegishli element. */}
+        <Script
+          id="meta-pixel"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: PIXEL_SRC }}
+        />
+        <noscript dangerouslySetInnerHTML={{ __html: PIXEL_NOSCRIPT }} />
+
         {/*
           THESIS: AI — linza. U bor narsani kattalashtiradi, yo'q narsani emas.
           Shisha sharlar sarlavha harflarini haqiqatdan kattalashtiradi. Rad
