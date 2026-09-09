@@ -61,25 +61,26 @@ const VIEW_CONTENT = `window.fbq && fbq('track', 'ViewContent');`;
    u yerga Reels dan bepul trafik keladi, ya'ni ushlab turishning narxi
    ham, sababi ham yo'q.
 
-   12 SOAT — taklif taymeri. Hisob har bir odamning O'ZI birinchi
-   kirgan paytidan boshlanadi (umumiy sana emas) va tugagach taymer
-   shunchaki yo'qoladi.
+   12 SOAT — video ochiq turadigan muddat. Hisob har bir odamning O'ZI
+   birinchi kirgan paytidan boshlanadi (umumiy sana emas) va tugagach
+   taymer shunchaki yo'qoladi.
 
-   34 DAQIQA — knopka ochilishi uchun ko'rilishi kerak bo'lgan vaqt.
-   Dars 50 daqiqa, ya'ni knopka videoning oxirini emas, uning eng
-   qimmatli qismidan keyingi paytni kutadi. Sanoq video HAQIQATAN
-   o'ynagan daqiqalarni oladi — oldinga surish yordam bermaydi.
+   4 DAQIQA — knopka ochilishi uchun ko'rilishi kerak bo'lgan vaqt
+   (muallif talabi, 2026-09-09; ilgari 34 daqiqa edi). Sanoq video
+   HAQIQATAN o'ynagan daqiqalarni oladi — oldinga surish yordam
+   bermaydi.
 
-   SONNI O'ZGARTIRISH shu ikki qatordan nariga o'tmaydi. Lekin
-   34 daqiqani KO'TARISH allaqachon yig'ilgan hisoblarni ham qayta
-   yopadi: brauzerda ko'rilgan vaqt saqlanadi, ochilish esa har safar
-   shu son bilan solishtiriladi. */
+   SONNI O'ZGARTIRISH shu ikki qatordan nariga o'tmaydi. Lekin sonni
+   KO'TARISH allaqachon yig'ilgan hisoblarni ham qayta yopadi:
+   brauzerda ko'rilgan vaqt saqlanadi, ochilish esa har safar shu son
+   bilan solishtiriladi. Tushirilganda esa aksincha — kerakli vaqtni
+   allaqachon yig'ganlarga knopka darrov ochiladi. */
 export default function ChallangeDarslikPage() {
   return (
     <>
       <DarslikPage
         botUrl="https://t.me/janob_dasturchi_bot?start=challange"
-        gate={{ offerHours: 12, watchMinutes: 34 }}
+        gate={{ offerHours: 12, watchMinutes: 4 }}
       />
 
       <Script

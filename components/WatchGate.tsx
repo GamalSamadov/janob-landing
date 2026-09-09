@@ -20,7 +20,7 @@ import { useEffect, useState, type ReactNode } from "react";
      0 < farq <= 4   -> ko'rildi (2x tezlikda ham shu oraliqda qoladi)
      farq > 4        -> OLDINGA SURILGAN; sanoqqa tushmaydi
 
-   Ya'ni videoni 34-daqiqaga surib qo'yish knopkani ochmaydi — buning
+   Ya'ni videoni kerakli daqiqaga surib qo'yish knopkani ochmaydi — buning
    uchun uni ko'rish kerak. Orqaga surilsa farq manfiy bo'ladi va u ham
    qo'shilmaydi (ikkinchi marta ko'rilgan joy ikki marta sanalmaydi).
 
