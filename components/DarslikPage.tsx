@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { LessonVideo } from "./LessonVideo";
+import { OfferTimer } from "./OfferTimer";
 import { Pill } from "./Pill";
+import { WatchGate } from "./WatchGate";
 
 /* BITTA SAHIFA, IKKI MARSHRUT (muallif talabi, 2026-09-07).
 
    `/bepul-darslik` va `/challange-darslik` — bir-biriga aynan o'xshash
-   ikki sahifa. YAGONA farqi knopkaning havolasida:
+   ikki sahifa. Birinchi farqi knopkaning havolasida:
 
      /bepul-darslik      -> ?start=kurs
      /challange-darslik  -> ?start=challange
@@ -21,6 +24,22 @@ import { Pill } from "./Pill";
    Talab esa "точь-в-точь", ya'ni farq faqat bitta joyda — `botUrl` da
    bo'lishi kerak. Marshrut fayllarida shuning uchun ikki qator qoldi:
    o'z metadatasi va shu komponent.
+
+   IKKINCHI FARQ — `gate` (muallif talabi, 2026-09-09) va u FAQAT
+   reklama oqimida bor:
+
+     /bepul-darslik      -> gate yo'q: knopka darrov turadi, taymer yo'q
+     /challange-darslik  -> gate bor: taklif taymeri va kechikkan knopka
+
+   Sabab oqimlarning narxida. Reklamadan kelgan odam pulga kelgan va u
+   videoni ko'rmasdan botga o'tib ketsa, byudjet ko'rilmagan darsga
+   sarflanadi. Reels dan kelgan bepul trafikda bunday narx yo'q, ya'ni
+   uni ushlab turishning ham ma'nosi yo'q — o'sha sahifa avvalgidek
+   qoladi.
+
+   FARQ SHU YERDA HAL BO'LADI, sahifa ikkiga bo'linmaydi: `gate`
+   berilmasa, razmetka 2026-09-09 gacha qanday bo'lsa, shundayligicha
+   chiziladi — mijoz tomonda ishlaydigan kod ham yuklanmaydi.
 
    YANGI OQIM QO'SHISH — uch qadam: `app/<nom>/page.tsx` yasash,
    `darslikMetadata("/<nom>")` ni chaqirish va `botUrl` ga yangi
@@ -87,15 +106,51 @@ export function darslikMetadata(canonical: string): Metadata {
 const YT_ID = "W5hlz5L4vQ8";
 const YT_SRC = `https://www.youtube.com/embed/${YT_ID}?rel=0&playsinline=1&modestbranding=1`;
 
+/* `enablejsapi=1` — pleerdan tashqaridan so'rash uchun YAGONA shart:
+   usiz `getCurrentTime()` javob bermaydi va knopka hech qachon
+   ochilmasdi. Faqat gate rejimida qo'shiladi — bepul oqimdagi ramka
+   avvalgidek, hech qanday boshqaruvsiz qoladi. */
+const YT_SRC_API = `${YT_SRC}&enablejsapi=1`;
+
+/** Pleer ramkasining nomi — `WatchGate` uni shu nom bilan topadi. */
+const FRAME = "chal-player";
+
 interface Props {
   /* Sahifadagi YAGONA harakat. Uni marshrut beradi — yuqoridagi
      izohga qarang. */
   botUrl: string;
+  /**
+   * Reklama oqimining qo'shimchasi. Berilmasa — sahifa avvalgidek.
+   *
+   * `offerHours` — taklif taymeri necha soatdan boshlanadi (har bir
+   * o'quvchiga o'zi, birinchi kirgan paytidan; qarang `OfferTimer`).
+   * `watchMinutes` — knopka ochilishi uchun ko'rilishi kerak bo'lgan
+   * daqiqa (qarang `WatchGate`).
+   */
+  gate?: { offerHours: number; watchMinutes: number };
 }
 
-export function DarslikPage({ botUrl }: Props) {
+export function DarslikPage({ botUrl, gate }: Props) {
+  /* `pill-white` — sahifadagi YAGONA harakat, shuning uchun u hero dagi
+     birinchi knopka bilan bir xil olovli yuzada. `external`: bot yangi
+     varaqda ochiladi va o'quvchi videoga qaytib kela oladi — dars 50
+     daqiqa, ya'ni knopka ko'pincha videoning o'rtasida bosiladi.
+
+     MATN IKKALA MARSHRUTDA HAM BIR XIL: o'quvchi qaysi havoladan
+     kelganini bilmaydi va bilishi ham shart emas — bo'linish faqat sanoq
+     uchun.
+
+     KNOPKA SHU YERDA YASALADI va ikkala holatda ham AYNAN SHU ketadi:
+     gate uni faqat KEYINROQ ko'rsatadi, boshqasini yasamaydi. Aks holda
+     ikkita knopka bo'lardi va biri ikkinchisidan orqada qolardi. */
+  const cta = (
+    <Pill href={botUrl} external className="pill-white chal-cta">
+      Bu yerga bosing
+    </Pill>
+  );
+
   return (
-    <main className="chal">
+    <main className={gate ? "chal chal-gated" : "chal"}>
       {/* HERO NING O'Z FONI, o'zgartirilmagan holda (muallif talabi:
           "huddi hozirgi saytning hero sectioni kabi dezaynda").
 
@@ -124,41 +179,37 @@ export function DarslikPage({ botUrl }: Props) {
           oxirida beraman.
         </p>
 
-        {/* O'lchovni O'RAM belgilaydi, `iframe` emas: `iframe` o'ramni
-            to'liq qoplaydi, o'ram esa enini EKRAN BALANDLIGIDAN oladi
-            (`globals.css`) — shu tufayli video hech qachon knopkani
-            ekrandan itarib yubormaydi.
+        {/* TAKLIF TAYMERI VIDEONING USTIDA (muallif talabi, 2026-09-09):
+            u sahifa ochilgan zahoti, video ko'rilmasdan OLDIN ko'rinishi
+            kerak — shoshilish sababi darsning o'zidan burun aytiladi.
 
-            `title` MAJBURIY: `iframe` ning o'zi ekran o'quvchi uchun
-            nomsiz ramka, ya'ni "nima bu?" degan savol javobsiz qolardi.
+            Joyi bo'sh joydan emas, VIDEONING byudjetidan olinadi:
+            `.chal-gated` o'sha byudjetni taymer va uning oralig'i
+            qadar kichraytiradi (`globals.css`). Aks holda sahifa
+            "hammasi bitta ekranda" qoidasini buzardi. */}
+        {gate && (
+          <OfferTimer hours={gate.offerHours} title="Taklif tugashiga" />
+        )}
 
-            `allow` dagi ro'yxat YouTube niki — undan faqat `autoplay`
-            olib tashlangan: bu sahifada video o'z-o'zidan boshlanmaydi
-            (tovush bilan boshlansa brauzer baribir to'xtatadi, ovozsiz
-            boshlansa esa o'quvchi videoning boshini o'tkazib yuboradi).
-            `allowFullScreen` esa 50 daqiqalik dars uchun shart. */}
-        <div className="chal-video">
-          <iframe
-            src={YT_SRC}
-            title="AI bilan telegram bot yasab, birinchi $200 ni ishlash"
-            loading="lazy"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
-        </div>
+        <LessonVideo
+          src={gate ? YT_SRC_API : YT_SRC}
+          frameId={gate ? FRAME : undefined}
+        />
 
-        {/* `pill-white` — sahifadagi YAGONA harakat, shuning uchun u
-            hero dagi birinchi knopka bilan bir xil olovli yuzada.
-            `external`: bot yangi varaqda ochiladi va o'quvchi videoga
-            qaytib kela oladi — dars 50 daqiqa, ya'ni knopka ko'pincha
-            videoning o'rtasida bosiladi.
-
-            MATN IKKALA MARSHRUTDA HAM BIR XIL: o'quvchi qaysi
-            havoladan kelganini bilmaydi va bilishi ham shart emas —
-            bo'linish faqat sanoq uchun. */}
-        <Pill href={botUrl} external className="pill-white chal-cta">
-          Bu yerga bosing
-        </Pill>
+        {/* Gate bo'lmasa knopka TO'G'RIDAN-TO'G'RI, hech qanday o'ramsiz
+            chiziladi — bepul oqimdagi razmetka 2026-09-09 dan oldingiday
+            qoladi. */}
+        {gate ? (
+          <WatchGate
+            frameId={FRAME}
+            minutes={gate.watchMinutes}
+            hint="Havola video davomida ochiladi — ko'rishda davom eting"
+          >
+            {cta}
+          </WatchGate>
+        ) : (
+          cta
+        )}
       </div>
     </main>
   );

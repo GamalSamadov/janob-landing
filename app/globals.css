@@ -5588,6 +5588,13 @@ textarea.admin-input {
    ========================================================================== */
 
 .chal {
+  /* VIDEO BYUDJETI O'ZGARUVCHIDA (2026-09-09). Ilgari son `.chal-video`
+     ning ichida turardi. U shu yerga ko'chdi, chunki reklama oqimida
+     sahifaga yana bitta jism — taklif taymeri — qo'shiladi va uning
+     joyi faqat shu byudjetdan olinishi mumkin (`.chal-gated` quyida).
+
+     Sonning O'ZI o'zgarmadi va uning tarixi `.chal-video` da. */
+  --chal-video-budget: 50svh;
   /* `.hero-backdrop` `absolute`, ya'ni unga tayanch kerak. */
   position: relative;
   /* `body` — flex ustun (`layout.tsx`), shu sababli sahifa qolgan
@@ -5695,7 +5702,7 @@ textarea.admin-input {
    Uchta chegaradan eng kichigi olinadi. */
 .chal-video {
   position: relative;
-  width: min(100%, calc(50svh * 16 / 9), 44rem);
+  width: min(100%, calc(var(--chal-video-budget) * 16 / 9), 44rem);
   /* Nisbat endi O'RAMDA. Ilgari uni sotuvchining `div` i
      `padding-top: 56.25%` bilan o'zi yasardi; `iframe` esa bunday
      qilmaydi — unga balandlik ochiq aytilishi kerak. */
@@ -5745,6 +5752,105 @@ textarea.admin-input {
    emas. Oraliq `svh` da — past ekranda o'zi siqiladi. */
 .chal-cta {
   margin-top: clamp(0.1rem, 0.8svh, 0.6rem);
+}
+
+/* ----------------------------------------------------------------------
+   REKLAMA OQIMI (`/challange-darslik`) — 2026-09-09.
+
+   Sahifaga ikkita narsa qo'shiladi va ikkalasi ham FAQAT shu marshrutda:
+   taklif taymeri (video ustida) va knopkaning kechikishi (video ostida).
+   Bepul oqim shu blokdagi hech bir qoidani olmaydi — `.chal-gated`
+   sinfi unda umuman yo'q.
+   -------------------------------------------------------------------- */
+
+/* TAYMER O'Z JOYINI VIDEODAN OLADI.
+
+   50svh -> 44svh, ya'ni 6svh. Taymer (~32px) va uning oralig'i (11–16px)
+   shu yerdan chiqadi. O'lchandi (knopka o'rni band holatda, ya'ni eng
+   yomon holat): knopka ostidagi zaxira 1024x640 da 26px, 1440x700 da
+   34px, 1366x768 da 50px — uchalasida ham sahifa skrollsiz.
+
+   Telefonda tik holatda bu qoida umuman sezilmaydi: u yerda videoning
+   enini ekran beradi (`100%`), byudjet esa undan kattaroq. */
+.chal-gated {
+  --chal-video-budget: 44svh;
+}
+
+/* TAKLIF TAYMERI (`OfferTimer`).
+
+   BIR QATORLIK VA KICHIK — asosiy sahifadagi `Countdown` dan ataylab
+   farq qiladi. U yerda taymer bo'limning o'z jismi va joy yetarli; bu
+   yerda esa sahifada allaqachon uchta jism bor (sarlavha, video,
+   knopka) va hammasi bitta ekranga sig'ishi shart. Ikki qatorli katta
+   soat byudjetdan ~80px olardi, bu satr esa ~32px oladi. */
+.chal-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.36rem 0.9rem;
+  /* Yumaloq: yonidagi knopka bilan bir oiladan ko'rinsin. */
+  border-radius: 999px;
+}
+
+.chal-timer-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.012em;
+  color: var(--text-2);
+}
+
+/* Raqamlar — satrdagi eng quyuq narsa: ko'z avval ularga tushadi. */
+.chal-timer-value {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+/* KNOPKANING O'RNI (`WatchGate`) — u yopiq turganda ham band.
+
+   `min-height` knopkaning o'z balandligidan (`.pill` — 44px): knopka
+   ochilganda ustidagi video sakrab yuqoriga ketmasin. Oraliq ham shu
+   o'ramda, knopkada emas — yopiq va ochiq holatda bir xil bo'lishi
+   uchun. */
+.chal-gate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-top: clamp(0.1rem, 0.8svh, 0.6rem);
+}
+
+.chal-gate .chal-cta {
+  margin-top: 0;
+  /* Knopka JIMGINA chiqadi: o'quvchi shu payt videoni ko'rayapti va
+     sakrab chiqqan narsa uni darsdan uzib qo'yadi. */
+  animation: chal-cta-in 0.55s var(--ease-out) both;
+}
+
+@keyframes chal-cta-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chal-gate .chal-cta {
+    animation: none;
+  }
+}
+
+/* Knopka o'rnidagi satr: nima bo'layotganini aytadi. Kengligi
+   `.chal-sub` nikidan kengroq — u bitta qatorga sig'ishi kerak,
+   ikkinchi qator o'ramni knopkadan balandroq qilib yuborardi. */
+.chal-locked {
+  margin: 0;
+  max-width: 40ch;
 }
 
 /* `.chal-follow` ("Menga obuna bo'ling") VA U BILAN BIRGA BUTUN OBUNA
@@ -5812,14 +5918,23 @@ textarea.admin-input {
      knopka ostida 48px, 844x390 da 50px zaxira qoldi, ya'ni byudjetni
      tushirishga sabab yo'q. Ko'tarishga ham: zaxira aynan shu ikki
      o'lchamda eng kichik. */
-  .chal-video {
-    width: min(100%, calc(36svh * 16 / 9), 44rem);
+  .chal {
+    --chal-video-budget: 36svh;
+  }
+  /* Yotiq holatda taymer arzonroq turadi: bu yerda oraliqlar allaqachon
+     siqilgan (yuqoridagi `.chal-shell`), ya'ni u faqat o'z balandligini
+     so'raydi. 3svh = 667x375 da 11px va u yerda zaxira allaqachon katta
+     edi (48px). O'lchandi: taymer qo'shilgach 667x375 da knopka ostida
+     35px qoldi, ya'ni sahifa skrollsiz. */
+  .chal-gated {
+    --chal-video-budget: 33svh;
   }
   .chal-title {
     font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2rem);
   }
   /* Knopka yotiq holatda matnga yopishadi — oraliq eng qimmat piksel. */
-  .chal-cta {
+  .chal-cta,
+  .chal-gate {
     margin-top: 0;
   }
 
