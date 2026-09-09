@@ -5765,15 +5765,20 @@ textarea.admin-input {
 
 /* TAYMER O'Z JOYINI VIDEODAN OLADI.
 
-   50svh -> 44svh, ya'ni 6svh. Taymer (~32px) va uning oralig'i (11–16px)
-   shu yerdan chiqadi. O'lchandi (knopka o'rni band holatda, ya'ni eng
-   yomon holat): knopka ostidagi zaxira 1024x640 da 26px, 1440x700 da
-   34px, 1366x768 da 50px — uchalasida ham sahifa skrollsiz.
+   50svh -> 41svh, ya'ni 9svh. Taymer (46–54px, enidan qarab) va uning
+   oralig'i (11–16px) shu yerdan chiqadi. Byudjet bir marta 44svh edi —
+   o'shanda taymerning raqamlari kichik (~32px lik satr) edi; katta va
+   qizil raqamlar (`.chal-timer-value`) satrni ~16px ga o'stirdi va
+   byudjet shuncha pasaydi.
+
+   O'lchandi (knopka o'rni band holatda, ya'ni eng yomon holat): knopka
+   ostidagi zaxira 1024x640 da 26px, 1440x700 da 34px, 1366x768 da 52px
+   — uchalasida ham sahifa skrollsiz.
 
    Telefonda tik holatda bu qoida umuman sezilmaydi: u yerda videoning
    enini ekran beradi (`100%`), byudjet esa undan kattaroq. */
 .chal-gated {
-  --chal-video-budget: 44svh;
+  --chal-video-budget: 41svh;
 }
 
 /* TAKLIF TAYMERI (`OfferTimer`).
@@ -5786,25 +5791,39 @@ textarea.admin-input {
 .chal-timer {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  padding: 0.36rem 0.9rem;
+  gap: 0.6rem;
+  padding: 0.5rem 1.05rem;
   /* Yumaloq: yonidagi knopka bilan bir oiladan ko'rinsin. */
   border-radius: 999px;
 }
 
 .chal-timer-label {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.012em;
   color: var(--text-2);
 }
 
-/* Raqamlar — satrdagi eng quyuq narsa: ko'z avval ularga tushadi. */
+/* RAQAMLAR KATTA VA QIZIL (muallif talabi, 2026-09-09).
+
+   Ilgari 0.95rem va `--text` edi — satr sahifada shivirlab turardi.
+   Endi u eng baland ovoz: o'lcham ~1.35 barobar oshdi va rang
+   sahifaning O'Z olovidan (`--flame`) olindi, ya'ni yangi rang
+   kiritilmadi — sarlavhaning "AI bilan" qismi ham shu spektrdan.
+
+   YOZUVNING O'ZI (`Taklif tugashiga`) QIZIL EMAS va bu ataylab: ikkalasi
+   ham qizil bo'lsa, satr bir tekis rangli dog'ga aylanib, ko'z qayerga
+   tushishini bilmay qolardi. Xira izoh + yonib turgan raqam — ko'z
+   raqamga tushadi.
+
+   O'LCHAM `clamp` da: telefonda 20px, kompyuterda 25.6px. Yuqori
+   chegara ataylab past — undan kattasi videoning byudjetini yeydi
+   (qarang `.chal-gated`). */
 .chal-timer-value {
-  font-size: 0.95rem;
+  font-size: clamp(1.25rem, 1.05rem + 0.8vw, 1.6rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--text);
+  color: var(--flame);
 }
 
 /* KNOPKANING O'RNI (`WatchGate`) — u yopiq turganda ham band.
@@ -5921,13 +5940,13 @@ textarea.admin-input {
   .chal {
     --chal-video-budget: 36svh;
   }
-  /* Yotiq holatda taymer arzonroq turadi: bu yerda oraliqlar allaqachon
-     siqilgan (yuqoridagi `.chal-shell`), ya'ni u faqat o'z balandligini
-     so'raydi. 3svh = 667x375 da 11px va u yerda zaxira allaqachon katta
-     edi (48px). O'lchandi: taymer qo'shilgach 667x375 da knopka ostida
-     35px qoldi, ya'ni sahifa skrollsiz. */
+  /* Yotiq holatda ham byudjet 6svh ga tushadi (36 -> 30), lekin bu yerda
+     u kamroq narsani yeydi: 6svh = 667x375 da 22px, taymer esa 49px
+     oladi — qolganini shu holatdagi katta zaxira (48px edi) qoplaydi.
+     O'lchandi: taymer qo'shilgach knopka ostida 34px qoldi, ya'ni
+     sahifa skrollsiz. */
   .chal-gated {
-    --chal-video-budget: 33svh;
+    --chal-video-budget: 30svh;
   }
   .chal-title {
     font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2rem);
