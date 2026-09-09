@@ -30,10 +30,20 @@ import { useEffect, useState } from "react";
 const KEY = "janob.taklif.tugash";
 
 interface Props {
-  /** Taklif necha soat amal qiladi. */
+  /** Video necha soat ochiq turadi. */
   hours: number;
-  /** Raqamlar oldidagi izoh. */
+  /**
+   * Taymer ustidagi ogohlantirish (katta, qizil).
+   *
+   * U taymer BILAN BIRGA yashaydi: muddat tugab, soat yo'qolganda bu
+   * satr ham ketadi. Aks holda sahifada "12 soat ichida o'chib ketadi"
+   * degan va'da qolib, uning ortida hech narsa turmasdi.
+   */
+  warning: string;
+  /** Raqamlar OLDIDAGI matn. */
   title: string;
+  /** Raqamlar ORTIDAGI matn — jumla soat bilan birga o'qiladi. */
+  tail: string;
 }
 
 /**
@@ -69,7 +79,7 @@ function clock(ms: number): string {
     .join(":");
 }
 
-export function OfferTimer({ hours, title }: Props) {
+export function OfferTimer({ hours, warning, title, tail }: Props) {
   /* Server va mijoz vaqti farq qilmasligi uchun birinchi render bo'sh —
      `Countdown` dagi bilan bir qoida. Server o'qigan `localStorage` yo'q,
      ya'ni u qolgan vaqtni BILMAYDI va uni chizishga urinsa, gidratatsiya
@@ -108,12 +118,21 @@ export function OfferTimer({ hours, title }: Props) {
 
   if (!left) return null;
 
+  /* O'RAM ODDIY HOLATDA KO'RINMAYDI (`display: contents`, `globals.css`):
+     ogohlantirish va soat `.chal-shell` ustunining o'z bandlari bo'lib
+     qoladi va oraliqni o'sha ustundan oladi. O'ram faqat yotiq ekranda
+     ishga tushadi — u yerda ikkalasi yonma-yon qatorga tizilib, bo'shagan
+     joyni videoga beradi. */
   return (
-    <div className="chal-timer glass glass-quiet">
-      <span className="chal-timer-label">{title}</span>
-      {/* `t-num` — raqamlar bir xil enda, ya'ni soat tikillaganda satr
-          o'ngga-chapga sakramaydi. */}
-      <span className="chal-timer-value t-num">{left}</span>
+    <div className="chal-deadline">
+      <p className="chal-warn">{warning}</p>
+      <div className="chal-timer glass glass-quiet">
+        <span className="chal-timer-label">{title}</span>
+        {/* `t-num` — raqamlar bir xil enda, ya'ni soat tikillaganda satr
+            o'ngga-chapga sakramaydi. */}
+        <span className="chal-timer-value t-num">{left}</span>
+        <span className="chal-timer-label">{tail}</span>
+      </div>
     </div>
   );
 }

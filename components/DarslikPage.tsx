@@ -188,7 +188,12 @@ export function DarslikPage({ botUrl, gate }: Props) {
             qadar kichraytiradi (`globals.css`). Aks holda sahifa
             "hammasi bitta ekranda" qoidasini buzardi. */}
         {gate && (
-          <OfferTimer hours={gate.offerHours} title="Video tugashiga" />
+          <OfferTimer
+            hours={gate.offerHours}
+            warning={`Video ${gate.offerHours} soat ichida o'chib ketadi!!!`}
+            title="Video o'chip ketishiga"
+            tail="qoldi"
+          />
         )}
 
         <LessonVideo

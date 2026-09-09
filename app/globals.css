@@ -5763,22 +5763,64 @@ textarea.admin-input {
    sinfi unda umuman yo'q.
    -------------------------------------------------------------------- */
 
-/* TAYMER O'Z JOYINI VIDEODAN OLADI.
+/* OGOHLANTIRISH VA TAYMER O'Z JOYINI VIDEODAN OLADI.
 
-   50svh -> 41svh, ya'ni 9svh. Taymer (46–54px, enidan qarab) va uning
-   oralig'i (11–16px) shu yerdan chiqadi. Byudjet bir marta 44svh edi —
-   o'shanda taymerning raqamlari kichik (~32px lik satr) edi; katta va
-   qizil raqamlar (`.chal-timer-value`) satrni ~16px ga o'stirdi va
-   byudjet shuncha pasaydi.
+   50svh -> 35svh, ya'ni 15svh. Byudjet uch marta tushdi va har safar
+   shu blokka yangi satr qo'shilgani uchun:
+
+     50 -> 44 (2026-09-09): taymer qo'shildi, satri ~32px edi
+     44 -> 41 (2026-09-09): raqamlar kattalashdi va qizardi (+16px)
+     41 -> 35 (2026-09-09): tepasiga ogohlantirish satri qo'shildi
+                            (~26px va uning oralig'i)
 
    O'lchandi (knopka o'rni band holatda, ya'ni eng yomon holat): knopka
-   ostidagi zaxira 1024x640 da 26px, 1440x700 da 34px, 1366x768 da 52px
+   ostidagi zaxira 1024x640 da 26px, 1440x700 da 36px, 1366x768 da 54px
    — uchalasida ham sahifa skrollsiz.
+
+   YANGI SATR QO'SHMOQCHI BO'LSANGIZ, byudjet yana tushishi kerak: bu
+   sahifada bo'sh joy yo'q, har bir yangi jism videoning hisobidan
+   yashaydi va shundan keyin uchala o'lchamda qayta o'lchash shart.
 
    Telefonda tik holatda bu qoida umuman sezilmaydi: u yerda videoning
    enini ekran beradi (`100%`), byudjet esa undan kattaroq. */
 .chal-gated {
-  --chal-video-budget: 41svh;
+  --chal-video-budget: 35svh;
+}
+
+/* OGOHLANTIRISH VA SOAT — bitta o'ramda, lekin o'ram KO'RINMAYDI.
+
+   `display: contents` o'ramning o'z qutisini olib tashlaydi: ikkala
+   bola `.chal-shell` ustunining to'g'ridan-to'g'ri bandiga aylanadi va
+   oraliqni o'sha ustundan (`gap`) oladi. Ya'ni tik ekranda bu o'ram
+   hech narsani o'zgartirmaydi.
+
+   U FAQAT YOTIQ EKRANDA ishga tushadi (quyida, `max-height: 520px`) —
+   o'sha yerda ikkala satr bitta qatorga tiziladi. */
+.chal-deadline {
+  display: contents;
+}
+
+/* OGOHLANTIRISH — taymerning ustidagi satr (muallif talabi, 2026-09-09).
+
+   Sahifadagi eng baland ovoz va shuning uchun soatdan ham TEPADA turadi:
+   u avval nima bo'lishini aytadi ("video o'chib ketadi"), soat esa
+   qachonligini. Rang taymer raqamlaridan olinadi — sahifada ikkita har
+   xil qizil bo'lishi kerak emas.
+
+   MATNI KODDA EMAS, marshrutda (`DarslikPage` ga prop bilan beriladi):
+   soat soni o'sha yerda turibdi va yozuv o'sha sondan yasaladi, ya'ni
+   12 ni o'zgartirsangiz bu satr ham o'zi ergashadi.
+
+   `max-width` — telefonda matn baribir ikki qatorga tushadi, bu chegara
+   esa keng ekranda uni bir qatorda cho'zilib ketishdan saqlaydi. */
+.chal-warn {
+  margin: 0;
+  max-width: 30ch;
+  font-size: clamp(1.05rem, 0.92rem + 0.75vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--flame);
 }
 
 /* TAKLIF TAYMERI (`OfferTimer`).
@@ -5940,13 +5982,41 @@ textarea.admin-input {
   .chal {
     --chal-video-budget: 36svh;
   }
-  /* Yotiq holatda ham byudjet 6svh ga tushadi (36 -> 30), lekin bu yerda
-     u kamroq narsani yeydi: 6svh = 667x375 da 22px, taymer esa 49px
-     oladi — qolganini shu holatdagi katta zaxira (48px edi) qoplaydi.
-     O'lchandi: taymer qo'shilgach knopka ostida 34px qoldi, ya'ni
-     sahifa skrollsiz. */
+  /* Yotiq holatda byudjet 10svh ga tushadi (36 -> 26): bu yerda taymer
+     (49px) ustiga ogohlantirish satri ham qo'shildi. 10svh = 667x375 da
+     37px, qolganini shu holatdagi katta zaxira qoplaydi. */
   .chal-gated {
-    --chal-video-budget: 30svh;
+    --chal-video-budget: 31svh;
+  }
+
+  /* OGOHLANTIRISH VA SOAT YONMA-YON — yotiq holatdagi eng katta yutuq.
+
+     Bu yerda en ortiqcha (667px), balandlik esa tanqis (375px). Ikkala
+     satr ustunda turganda ular ~76px yerdi va video shuncha kichrayardi.
+     Bitta qatorga tizilganda esa ~46px oladi.
+
+     `flex-wrap` — zaxira: juda tor yotiq ekranda ular baribir ikki
+     qatorga tushadi va sahifa buzilmaydi. */
+  .chal-deadline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 0.85rem;
+  }
+
+  /* Ikkalasi ham kichrayadi: bitta qatorga sig'ishlari kerak, aks holda
+     yuqoridagi yutuq `flex-wrap` bilan qaytib ketardi. */
+  .chal-warn {
+    font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.15rem);
+    max-width: 52ch;
+  }
+  .chal-timer {
+    padding: 0.32rem 0.8rem;
+    gap: 0.45rem;
+  }
+  .chal-timer-value {
+    font-size: 1.15rem;
   }
   .chal-title {
     font-size: clamp(1.25rem, 0.9rem + 1.8vw, 2rem);
